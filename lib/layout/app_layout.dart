@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-//styles
-import 'package:save_me/shared/constants/colors.dart';
 import 'package:save_me/shared/cubit/lost_cubit.dart';
 
 class AppLayout extends StatelessWidget {
@@ -23,10 +21,7 @@ class AppLayout extends StatelessWidget {
             child: Scaffold(
               body: cubit.screen,
               bottomNavigationBar: BottomNavigationBar(
-                type: BottomNavigationBarType.fixed,
-                iconSize: 35,
-                selectedItemColor: bourbon,
-                unselectedItemColor: bourbon,
+                iconSize: 30,
 
                 currentIndex: cubit.tab,
                 onTap: (curretIndex) {

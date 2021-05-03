@@ -7,7 +7,7 @@ import 'package:meta/meta.dart';
 import 'package:save_me/models/post.dart';
 
 //data
-import 'package:save_me/shared/constants/bottom_bar_icons.dart';
+import 'package:save_me/shared/constants/app_icons/bottom_bar_icons.dart';
 import 'package:save_me/shared/constants/screens_list.dart';
 
 part 'lost_state.dart';
@@ -58,12 +58,12 @@ class LostCubit extends Cubit<LostState> {
   List<Post> get posts => this._posts;
   List<Post> getMissingPostData(){
     List<Post> missingPosts = this.posts.sublist(0, 2);
-    emit(GetMissingPostData(missingPosts));
+    // emit(GetMissingPostData(missingPosts));
     return missingPosts;
   }
   List<Post> getFindingPostData(){
     List<Post> findingPosts = this.posts.sublist(2, 4);
-    emit(GetFindingPostData(findingPosts));
+    // emit(GetFindingPostData(findingPosts));
     return findingPosts;
   }
 

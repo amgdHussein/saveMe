@@ -49,7 +49,7 @@ class HomeScreen extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.all(20),
                         child: Text(
-                          "never lost".toUpperCase(),
+                          "Save Me".toUpperCase(),
                           style: TextStyle(
                             color: Colors.white,
                             letterSpacing: 2.0,
