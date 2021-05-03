@@ -10,10 +10,10 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<LostCubit, LostState>(
-      listener: (context, state) {
+      listener: (BuildContext context, LostState state) {
         print(state);
       },
-      builder: (context, state) {
+      builder: (BuildContext context, LostState state) {
 
         return DefaultTabController(
           length: 2,
@@ -91,6 +91,21 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ),
                       ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 10,
+                right: 10,
+                child: FloatingActionButton(
+                  onPressed: () async {                    
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.edit),
+                      Text("Edit", style: TextStyle(fontSize: 10)),
                     ],
                   ),
                 ),

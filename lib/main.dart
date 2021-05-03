@@ -11,29 +11,26 @@ class MyApp extends StatelessWidget {
       title: 'save me',
       debugShowCheckedModeBanner: false,
       home: AppLayout(),
-      
+
+      themeMode: ThemeMode.light,
       theme: ThemeData(
-        primaryColor: austyGray,
-        canvasColor: concrete,
-
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          type: BottomNavigationBarType.fixed,
-          unselectedItemColor: austyGray,
-        )
-      ),
-
-      darkTheme: ThemeData(
         primaryColor: bourbon,
         canvasColor: mineShaft,
 
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
           type: BottomNavigationBarType.fixed,
-          unselectedItemColor: bourbon,
+          backgroundColor: concrete,
+          unselectedItemColor: austyGray,
+        ),
+
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: bourbon,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          splashColor: codGray,
         )
       ),
-
-      themeMode: ThemeMode.dark,
-
     );
   }
 }
