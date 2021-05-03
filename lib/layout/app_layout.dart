@@ -21,8 +21,6 @@ class AppLayout extends StatelessWidget {
             child: Scaffold(
               body: cubit.screen,
               bottomNavigationBar: BottomNavigationBar(
-                iconSize: 30,
-
                 currentIndex: cubit.tab,
                 onTap: (curretIndex) {
                   LostCubit.get(context).updateCurrentTab(curretIndex: curretIndex);

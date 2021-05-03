@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:save_me/shared/components/posts_view.dart';
+import 'package:save_me/components/posts_view.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:save_me/shared/cubit/lost_cubit.dart';
@@ -104,8 +104,8 @@ class HomeScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.edit),
-                      Text("Edit", style: TextStyle(fontSize: 10)),
+                      Icon(Icons.edit, color: Theme.of(context).canvasColor,),
+                      Text("Edit", style: TextStyle(fontSize: 10, color: Theme.of(context).canvasColor)),
                     ],
                   ),
                 ),

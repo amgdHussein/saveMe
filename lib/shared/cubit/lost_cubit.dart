@@ -58,12 +58,12 @@ class LostCubit extends Cubit<LostState> {
   List<Post> get posts => this._posts;
   List<Post> getMissingPostData(){
     List<Post> missingPosts = this.posts.sublist(0, 2);
-    // emit(GetMissingPostData(missingPosts));
+    emit(GetMissingPostData(missingPosts));
     return missingPosts;
   }
   List<Post> getFindingPostData(){
     List<Post> findingPosts = this.posts.sublist(2, 4);
-    // emit(GetFindingPostData(findingPosts));
+    emit(GetFindingPostData(findingPosts));
     return findingPosts;
   }
 
