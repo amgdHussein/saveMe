@@ -7,13 +7,22 @@ import 'package:meta/meta.dart';
 import 'package:save_me/models/post.dart';
 
 //data
-import 'package:save_me/shared/constants/app_icons/bottom_bar_icons.dart';
-import 'package:save_me/shared/constants/screens_list.dart';
+import 'package:save_me/shared/constants/app_icons/bottom_nav_icons.dart';
+import 'package:save_me/shared/constants/bottom_nav_screen_list.dart';
 
-part 'lost_state.dart';
+part 'save_me_state.dart';
 
-class LostCubit extends Cubit<LostState> {
+class SaveMeCubit extends Cubit<SaveMeState> {
 
+  SaveMeCubit() : super(SaveMeInitial()) {
+    this.updateCurrentTab(curretIndex: 0);
+  }
+
+  // get context
+  static SaveMeCubit get(BuildContext context) => BlocProvider.of(context);
+
+
+  // change bottom app bar
   int _tab;
   get tab => this._tab;
 
@@ -23,17 +32,9 @@ class LostCubit extends Cubit<LostState> {
   Widget _screen;
   get screen => this._screen;
 
-  LostCubit() : super(LostInitial()) {
-    this.updateCurrentTab(curretIndex: 0);
-  }
-
-  // get context
-  static LostCubit get(BuildContext context) => BlocProvider.of(context);
-
-  // change bottom app bar
   void updateCurrentTab({@required int curretIndex}) {
     this._tab = curretIndex;
-    emit(LostChangeBottomNavIndex());
+    emit(SaveMeChangeBottomNavIndex());
 
     this.updateBarIcons(selectedIndex: curretIndex);
     this.updateCurrentScreen(selectedIndex: curretIndex);
@@ -41,11 +42,11 @@ class LostCubit extends Cubit<LostState> {
   void updateBarIcons({@required int selectedIndex}) {
     this._icons = []..addAll(unselectedIcons);
     this._icons[selectedIndex] = selectedIcons[selectedIndex];
-    emit(LostChangeBottomNavIcons());
+    emit(SaveMeChangeBottomNavIcons());
   }
   void updateCurrentScreen({@required int selectedIndex}){
     this._screen = screens[selectedIndex];
-    emit(LostChangeBottomNavScreen());
+    emit(SaveMeChangeBottomNavScreen());
   }
 
   // posts
