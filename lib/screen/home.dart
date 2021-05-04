@@ -1,19 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:save_me/components/posts_view.dart';
+import 'package:save_me/shared/components/posts_view.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:save_me/shared/cubit/lost_cubit.dart';
+import 'package:save_me/shared/cubit/save_me_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LostCubit, LostState>(
-      listener: (BuildContext context, LostState state) {
-        print(state);
+    return BlocConsumer<SaveMeCubit, SaveMeState>(
+      listener: (BuildContext context, SaveMeState state) {
+        if (state is SaveMeInitial) print(state);
       },
-      builder: (BuildContext context, LostState state) {
+      builder: (BuildContext context, SaveMeState state) {
 
         return DefaultTabController(
           length: 2,
@@ -26,8 +26,8 @@ class HomeScreen extends StatelessWidget {
                 bottom: 0,
                 child: TabBarView(
                   children: [
-                    PostsView(posts: LostCubit.get(context).getMissingPostData()),
-                    PostsView(posts: LostCubit.get(context).getFindingPostData()),
+                    PostsView(posts: SaveMeCubit.get(context).getMissingPostData()),
+                    PostsView(posts: SaveMeCubit.get(context).getFindingPostData()),
                   ],
                 ),
               ),
@@ -105,7 +105,7 @@ class HomeScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.edit, color: Theme.of(context).canvasColor,),
-                      Text("Edit", style: TextStyle(fontSize: 10, color: Theme.of(context).canvasColor)),
+                      Text("Report", style: TextStyle(fontSize: 10, color: Theme.of(context).canvasColor)),
                     ],
                   ),
                 ),
