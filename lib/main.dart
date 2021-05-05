@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:save_me/screen/onboarding.dart';
+import 'package:save_me/screen/signin.dart';
 import 'package:save_me/shared/styles/themes.dart';
 
 void main() => runApp(MyApp());
@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'save me',
       debugShowCheckedModeBanner: false,
-      home: OnboardingScreen(), //AppLayout(),
+      home: SignInScreen(),
       themeMode: ThemeMode.light,
       theme: SaveMeTheme.lightTheme,
     );

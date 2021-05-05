@@ -12,9 +12,9 @@ List<OnboardingText> pageSentences = [
     ],
     colors: [
       GRAY_CHATEAU,
-      GHARADE,
+      ABBEY,
       GRAY_CHATEAU,
-      GHARADE,
+      ABBEY,
     ],
   ),
   OnboardingText(
@@ -24,7 +24,7 @@ List<OnboardingText> pageSentences = [
     ],
     colors: [
       GRAY_CHATEAU,
-      GHARADE,
+      ABBEY,
     ],
   ),
   OnboardingText(
@@ -42,7 +42,7 @@ List<OnboardingText> pageSentences = [
     ],
     colors: [
       GRAY_CHATEAU,
-      GHARADE,
+      ABBEY,
     ],
   ),
   OnboardingText(
@@ -52,7 +52,7 @@ List<OnboardingText> pageSentences = [
     ],
     colors: [
       GRAY_CHATEAU,
-      GHARADE,
+      ABBEY,
     ],
   ),
 ];

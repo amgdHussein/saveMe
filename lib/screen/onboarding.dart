@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_conditional_rendering/conditional.dart';
 
+import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:save_me/shared/constants/onboarding_page_sentences.dart';
 import 'package:save_me/shared/styles/colors.dart';
@@ -34,21 +34,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 conditionBuilder: (context) => isLastPage,
                 widgetBuilder: (context) => Text(
                   "done".toUpperCase(),
-                  style: TextStyle(
-                    color: GRAY_CHATEAU,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context).textTheme.button.copyWith(color: GRAY_CHATEAU),
                 ),
                 fallbackBuilder: (context) => GestureDetector(
-                  child: Text(
-                    "skip".toUpperCase(),
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: Text("skip".toUpperCase(), style: Theme.of(context).textTheme.button,),
                   onTap: () {
                     setState(() {
                       boarderController.jumpToPage(pageSentences.length - 1);
@@ -65,7 +54,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 itemBuilder: (BuildContext context, int currentPage) => Center(
                   child: RichText(
                     text: TextSpan(
-                      style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
+                      style: Theme.of(context).textTheme.headline1,
                       children: [
                         for (
                           int currentSentence = 0; 
@@ -96,11 +85,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: GestureDetector(
                     child: Text(
                       "let's go!".toUpperCase(),
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.button,
                     ),
                     onTap: () {
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AppLayout()));
