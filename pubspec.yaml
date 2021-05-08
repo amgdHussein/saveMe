@@ -24,9 +24,12 @@ dependencies:
   flutter:
     sdk: flutter
   bloc: ^7.0.0
+  # bloc_oracle: ^0.1.2
   bloc_provider: ^0.8.0
+  cloud_firestore: ^2.0.0
   cupertino_icons: ^1.0.2
-  dio: ^4.0.0
+  # dio: ^4.0.0
+  firebase_auth: ^1.1.3
   flutter_bloc: ^7.0.0
   flutter_conditional_rendering: ^2.0.0
   smooth_page_indicator: ^0.2.3
