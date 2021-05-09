@@ -2,13 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../modules/save_me/models/post.dart';
 
-class PostWidget extends StatelessWidget {
-  final Post post;
-  PostWidget({Key key, this.post}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
+Widget post({@required Post post}) => Stack(
       children: [
         Image.network(post.imagePath),
         Positioned(
@@ -39,5 +33,14 @@ class PostWidget extends StatelessWidget {
         ),
       ],
     );
-  }
-}
+
+
+Widget viewPosts({@required List<Post> posts}) => ListView.separated(
+      itemBuilder: (context, index) => post(
+        post: posts[index],
+      ),
+      separatorBuilder: (context, index) => SizedBox(
+        height: 2,
+      ),
+      itemCount: posts.length,
+    );
