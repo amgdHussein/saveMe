@@ -1,8 +1,6 @@
 part of 'sign_in_bloc.dart';
 
 abstract class SignInEvent extends Equatable {
-  const SignInEvent();
-
   @override
   List<Object> get props => [];
 }
@@ -14,6 +12,9 @@ class SignInEmailChange extends SignInEvent {
 
   @override
   List<Object> get props => [email];
+
+  @override
+  String toString() => 'SignInEmailChange(email: $email)';
 }
 
 class SignInPasswordChange extends SignInEvent {
@@ -23,6 +24,9 @@ class SignInPasswordChange extends SignInEvent {
 
   @override
   List<Object> get props => [password];
+
+  @override
+  String toString() => 'SignInPasswordChange(password: $password)';
 }
 
 class SignInWithCredentialsPressed extends SignInEvent {
@@ -33,4 +37,8 @@ class SignInWithCredentialsPressed extends SignInEvent {
 
   @override
   List<Object> get props => [email, password];
+
+  @override
+  String toString() =>
+      'SignInWithCredentialsPressed(email: $email, password: $password)';
 }

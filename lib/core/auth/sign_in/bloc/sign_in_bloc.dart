@@ -10,37 +10,38 @@ import '../../../../modules/save_me/repositories/user_repository.dart';
 part 'sign_in_event.dart';
 part 'sign_in_state.dart';
 
-class SignUpBloc extends Bloc<SignInEvent, SignInState> {
+class SignInBloc extends Bloc<SignInEvent, SignInState> {
   final UserRepository _userRepository;
-  SignUpBloc({UserRepository userRepository})
+  SignInBloc({UserRepository userRepository})
       : _userRepository = userRepository,
         super(SignInState.initial());
 
   @override
   Stream<SignInState> mapEventToState(SignInEvent event) async* {
     if (event is SignInEmailChange)
-      yield* _mapSignInEmailChangeToState(event.email);
+      yield* _mapSignInEmailChangeToState(email: event.email);
     else if (event is SignInPasswordChange)
-      yield* _mapSignInPasswordChangeToState(event.password);
-    if (event is SignInWithCredentialsPressed)
+      yield* _mapSignInPasswordChangeToState(password: event.password);
+    else if (event is SignInWithCredentialsPressed)
       yield* _mapSignInWithCredentialsPressedToState(
-        event.email,
-        event.password,
+        email: event.email,
+        password: event.password,
       );
   }
 
-  Stream<SignInState> _mapSignInEmailChangeToState(String email) async* {
+  Stream<SignInState> _mapSignInEmailChangeToState({String email}) async* {
     yield state.update(isEmailValid: Validators.isValidEmail(email));
   }
 
-  Stream<SignInState> _mapSignInPasswordChangeToState(String password) async* {
+  Stream<SignInState> _mapSignInPasswordChangeToState(
+      {String password}) async* {
     yield state.update(isPasswordValid: Validators.isValidPassword(password));
   }
 
-  Stream<SignInState> _mapSignInWithCredentialsPressedToState(
+  Stream<SignInState> _mapSignInWithCredentialsPressedToState({
     String email,
     String password,
-  ) async* {
+  }) async* {
     yield SignInState.loading();
 
     try {
@@ -49,7 +50,8 @@ class SignUpBloc extends Bloc<SignInEvent, SignInState> {
         password: password,
       );
       yield SignInState.success();
-    } catch (_) {
+    } catch (error) {
+      print(error);
       yield SignInState.failure();
     }
   }

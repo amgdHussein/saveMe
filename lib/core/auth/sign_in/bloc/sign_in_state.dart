@@ -1,6 +1,6 @@
 part of 'sign_in_bloc.dart';
 
-class SignInState extends Equatable {
+class SignInState {
   final bool isEmailValid;
   final bool isPasswordValid;
   final bool isSubmitting;
@@ -85,6 +85,6 @@ class SignInState extends Equatable {
   }
 
   @override
-  List<Object> get props =>
-      [isEmailValid, isPasswordValid, isSubmitting, isSuccess, isFailure];
+  String toString() =>
+      'SignInState(isEmailValid: $isEmailValid, isPasswordValid: $isPasswordValid, isSubmitting: $isSubmitting, isSuccess: $isSuccess, isFailure: $isFailure)';
 }

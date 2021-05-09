@@ -1,26 +1,46 @@
+import 'dart:async';
+// import 'dart:html';
+
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_conditional_rendering/conditional.dart';
 import 'sign_in_form.dart';
 import '../../../modules/save_me/repositories/user_repository.dart';
 import '../../../config/themes/colors.dart';
 import 'bloc/sign_in_bloc.dart';
 
-class SignInScreen extends StatelessWidget {
+import 'package:provider/provider.dart';
+
+class SignInScreen extends StatefulWidget {
   final UserRepository _userRepository;
   const SignInScreen({Key key, UserRepository userRepository})
       : _userRepository = userRepository,
         super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  _SignInScreenState createState() => _SignInScreenState();
+}
 
+class _SignInScreenState extends State<SignInScreen> {
+  bool isConnected;
+
+  @override
+  void initState() {
+    DataConnectionChecker().hasConnection.then((value) {
+      this.isConnected = value;
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(title: Text("Back")),
-      body: BlocProvider(
-        create: (context) => SignUpBloc(userRepository: _userRepository),
+      body: BlocProvider<SignInBloc>(
+        create: (context) => SignInBloc(userRepository: widget._userRepository),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -62,7 +82,7 @@ class SignInScreen extends StatelessWidget {
                     ).textTheme.headline3.copyWith(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 70),
-                  SignInForm(userRepository: _userRepository)
+                  SignInForm(userRepository: widget._userRepository),
                 ],
               ),
             ),
@@ -72,3 +92,19 @@ class SignInScreen extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+// actions: <Widget>[
+//           TextButton(
+//             child: Text('Approve'),
+//             onPressed: () {
+//               Navigator.of(context).pop();
+//             },
+//           ),

@@ -1,8 +1,10 @@
 // import 'package:bloc_provider/bloc_provider.dart';
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:save_me/core/auth/blocs/auth_bloc.dart';
+import 'package:save_me/utils/ui/app_dialogs.dart';
 import 'bloc/sign_up_bloc.dart';
 
 class SignUpForm extends StatefulWidget {
@@ -11,7 +13,6 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  // GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -73,19 +74,21 @@ class _SignUpFormState extends State<SignUpForm> {
           BlocProvider.of<AuthBloc>(context).add(
             AuthSignedIn(),
           );
-          Navigator.pop(context);
+          Navigator.popUntil(context, (route) => route.isFirst);
         }
       },
       child: BlocBuilder<SignUpBloc, SignUpState>(
         builder: (context, state) {
           return Form(
             key: _formKey,
+            autovalidateMode: AutovalidateMode.always,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 TextFormField(
                   controller: _userNameController,
                   keyboardType: TextInputType.name,
+                  autocorrect: false,
                   decoration: InputDecoration(
                     suffixIcon: Icon(Icons.person_rounded),
                     labelText: "Username",
@@ -104,6 +107,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
+                  autocorrect: false,
                   decoration: InputDecoration(
                     suffixIcon: Icon(Icons.email_rounded),
                     labelText: "Email Address",
@@ -141,14 +145,22 @@ class _SignUpFormState extends State<SignUpForm> {
                   },
                 ),
                 SizedBox(height: 30),
-                SizedBox(
-                  width: double.infinity,
-                  child: FloatingActionButton(
-                    child: Text("Sign In"),
-                    onPressed: () {
-                      if (isButtonEnabled(state)) _onFormSubmitted();
-                    },
-                  ),
+                // for bloc addition
+                FutureBuilder(
+                  future: DataConnectionChecker().hasConnection,
+                  builder: (context, snapshot) {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: FloatingActionButton(
+                        child: Text("Sign In"),
+                        onPressed: () {
+                          if (!snapshot.data)
+                            showErrorNetworkDiag(context);
+                          else if (isButtonEnabled(state)) _onFormSubmitted();
+                        },
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

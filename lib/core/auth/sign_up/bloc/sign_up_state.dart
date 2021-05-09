@@ -1,6 +1,6 @@
 part of 'sign_up_bloc.dart';
 
-class SignUpState extends Equatable {
+class SignUpState {
   final bool isEmailValid;
   final bool isPasswordValid;
   final bool isSubmitting;
@@ -84,7 +84,13 @@ class SignUpState extends Equatable {
     );
   }
 
-  @override
-  List<Object> get props =>
-      [isEmailValid, isPasswordValid, isSubmitting, isSuccess, isFailure];
+  // @override
+  // List<Object> get props =>
+  //     [isEmailValid, isPasswordValid, isSubmitting, isSuccess, isFailure];
+
+       @override
+  String toString() =>
+      'SignUpState(isEmailValid: $isEmailValid, isPasswordValid: $isPasswordValid, isSubmitting: $isSubmitting, isSuccess: $isSuccess, isFailure: $isFailure)';
+
+
 }

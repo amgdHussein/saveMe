@@ -1,8 +1,6 @@
 part of 'sign_up_bloc.dart';
 
 abstract class SignUpEvent extends Equatable {
-  const SignUpEvent();
-
   @override
   List<Object> get props => [];
 }
@@ -14,6 +12,9 @@ class SignUpEmailChange extends SignUpEvent {
 
   @override
   List<Object> get props => [email];
+
+  @override
+  String toString() => 'SignUpEmailChange(email: $email)';
 }
 
 class SignUpPasswordChange extends SignUpEvent {
@@ -23,6 +24,9 @@ class SignUpPasswordChange extends SignUpEvent {
 
   @override
   List<Object> get props => [password];
+
+  @override
+  String toString() => 'SignUpPasswordChange(password: $password)';
 }
 
 class SignUpSubmitted extends SignUpEvent {
@@ -33,4 +37,7 @@ class SignUpSubmitted extends SignUpEvent {
 
   @override
   List<Object> get props => [email, password];
+
+  @override
+  String toString() => 'SignUpSubmitted(email: $email, password: $password)';
 }

@@ -22,7 +22,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       yield* _mapSignUpEmailChangeToState(event.email);
     else if (event is SignUpPasswordChange)
       yield* _mapSignUpPasswordChangeToState(event.password);
-    if (event is SignUpSubmitted)
+    else if (event is SignUpSubmitted)
       yield* _mapSignUpSubmittedToState(
         email: event.email,
         password: event.password,
@@ -32,6 +32,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   Stream<SignUpState> _mapSignUpEmailChangeToState(String email) async* {
     yield state.update(isEmailValid: Validators.isValidEmail(email));
   }
+
 
   Stream<SignUpState> _mapSignUpPasswordChangeToState(String password) async* {
     yield state.update(isPasswordValid: Validators.isValidPassword(password));

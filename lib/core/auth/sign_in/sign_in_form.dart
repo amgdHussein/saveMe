@@ -1,4 +1,5 @@
 // import 'package:bloc_provider/bloc_provider.dart';
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,10 +8,11 @@ import 'package:save_me/core/auth/blocs/auth_bloc.dart';
 import 'package:save_me/core/auth/sign_in/bloc/sign_in_bloc.dart';
 import 'package:save_me/core/auth/sign_up/sign_up.dart';
 import 'package:save_me/modules/save_me/repositories/user_repository.dart';
+import 'package:save_me/utils/ui/app_dialogs.dart';
 
 class SignInForm extends StatefulWidget {
   final UserRepository _userRepository;
-  const SignInForm({Key key, UserRepository userRepository})
+  SignInForm({Key key, UserRepository userRepository})
       : _userRepository = userRepository,
         super(key: key);
 
@@ -28,23 +30,22 @@ class _SignInFormState extends State<SignInForm> {
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
 
   bool isButtonEnabled(SignInState state) =>
-      state.isFormValid && this.isPopulated && !state.isSubmitting;
+      state.isFormValid && isPopulated && !state.isSubmitting;
 
-  SignUpBloc _signInBloc;
+  SignInBloc _signInBloc;
   @override
   void initState() {
     super.initState();
-    _signInBloc = BlocProvider.of<SignUpBloc>(context);
+    _signInBloc = BlocProvider.of<SignInBloc>(context);
     _emailController.addListener(_onEmailChange);
     _passwordController.addListener(_onPasswordChange);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SignUpBloc, SignInState>(
+    return BlocListener<SignInBloc, SignInState>(
       listener: (context, state) {
         if (state.isFailure) {
-          print("fail");
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: Colors.brown[100],
@@ -81,16 +82,18 @@ class _SignInFormState extends State<SignInForm> {
             AuthSignedIn(),
           );
       },
-      child: BlocBuilder<SignUpBloc, SignInState>(
+      child: BlocBuilder<SignInBloc, SignInState>(
         builder: (context, state) {
           return Form(
             key: _formKey,
+            autovalidateMode: AutovalidateMode.always,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
+                  autocorrect: false,
                   decoration: InputDecoration(
                     suffixIcon: Icon(Icons.person_rounded),
                     labelText: "Email Address",
@@ -127,18 +130,26 @@ class _SignInFormState extends State<SignInForm> {
                     );
                   },
                 ),
-                SizedBox(
-                  height: 30,
+                SizedBox(height: 30),
+                
+                // for bloc addition
+                FutureBuilder(
+                  future: DataConnectionChecker().hasConnection,
+                  builder: (context, snapshot) {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: FloatingActionButton(
+                        child: Text("Sign In"),
+                        onPressed: () {
+                          if (!snapshot.data)
+                            showErrorNetworkDiag(context);
+                          else if (isButtonEnabled(state)) _onFormSubmitted();
+                        },
+                      ),
+                    );
+                  },
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  child: FloatingActionButton(
-                    child: Text("Sign In"),
-                    onPressed: () {
-                      if (isButtonEnabled(state)) _onFormSubmitted();
-                    },
-                  ),
-                ),
+
                 SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {

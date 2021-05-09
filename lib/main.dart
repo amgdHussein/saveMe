@@ -1,33 +1,58 @@
+import 'package:bloc/bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'config/routes/routes.dart';
-import 'config/themes/light_theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/on_boarding/on_boarding.dart';
+import 'modules/save_me/repositories/user_repository.dart';
+import 'modules/save_me/screens/home.dart';
+import 'utils/app_bloc_observer.dart';
+import 'config/themes/light_theme.dart';
+import 'core/auth/blocs/auth_bloc.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  Bloc.observer = SimpleBlocObserver();
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  final UserRepository _userRepository = UserRepository();
+
+  runApp(
+    BlocProvider(
+      create: (context) =>
+          AuthBloc(userRepository: _userRepository)..add(AuthStarted()),
+      child: MyApp(
+        userRepository: _userRepository,
+      ),
+    ),
+  );
 }
 
-class _MyAppState extends State<MyApp> {
-  final AppRouter _router = AppRouter();
+class MyApp extends StatelessWidget {
+  final UserRepository _userRepository;
+  MyApp({UserRepository userRepository}) : _userRepository = userRepository;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'save me',
       debugShowCheckedModeBanner: false,
-      onGenerateRoute: _router.generateRoute,
+      // onGenerateRoute: _router.generateRoute,
       themeMode: ThemeMode.light,
       theme: lightTheme,
-      // home: OnboardingScreen(),
-    );
-  }
+      home: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          if (state is AuthFailure)
+            return OnboardingScreen(
+              userRepository: _userRepository,
+            );
+          if (state is AuthSucess) return HomeScreen(user: state.firebaseUser);
 
-  @override
-  void dispose() {
-    _router.dispose();
-    super.dispose();
+          return Scaffold(
+            appBar: AppBar(),
+            body: Center(child: CircularProgressIndicator()),
+          );
+        },
+      ),
+    );
   }
 }

@@ -2,8 +2,6 @@ part of 'auth_bloc.dart';
 
 @immutable
 abstract class AuthState extends Equatable {
-  AuthState();
-
   @override
   List<Object> get props => [];
 }
