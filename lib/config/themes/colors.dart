@@ -15,8 +15,9 @@ const MaterialColor GRAY_CHATEAU = const MaterialColor(
   },
 );
 
+//canvs
 const MaterialColor ABBEY = const MaterialColor(
-  0xff474A50,
+  0xff252A34,
   const <int, Color>{
     50: const Color(0xff747576),
     100: const Color(0xff696A6D),
@@ -29,6 +30,7 @@ const MaterialColor ABBEY = const MaterialColor(
   },
 );
 
+//app bar
 const MaterialColor ATHENS_GRAY = const MaterialColor(
   0xffF5F7F8,
   const <int, Color>{
