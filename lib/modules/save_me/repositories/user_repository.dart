@@ -11,32 +11,20 @@ class UserRepository {
     @required String email,
     @required String password,
   }) async {
-    try {
-      return await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
-    }
+    return await _firebaseAuth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
   }
 
   Future<void> singUpWithCredentials({
     @required String email,
     @required String password,
   }) async {
-    try {
-      return await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on FirebaseAuthException catch (e) {
-      print(e.message);
-    }
+    return await _firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
   }
 
   Future<void> singOut() async {
@@ -48,7 +36,7 @@ class UserRepository {
     return currentUser != null;
   }
 
-  Future<User> getUser() async {
+  User getUser() {
     return _firebaseAuth.currentUser;
   }
 }
