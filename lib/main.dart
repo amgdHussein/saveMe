@@ -3,10 +3,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/on_boarding/on_boarding.dart';
+import 'modules/layout/layout.dart';
 import 'modules/save_me/repositories/user_repository.dart';
-import 'modules/save_me/screens/home.dart';
 import 'utils/app_bloc_observer.dart';
-import 'config/themes/light_theme.dart';
+import 'config/themes/app_theme.dart';
 import 'core/auth/blocs/auth_bloc.dart';
 
 void main() async {
@@ -37,15 +37,15 @@ class MyApp extends StatelessWidget {
       title: 'save me',
       debugShowCheckedModeBanner: false,
       // onGenerateRoute: _router.generateRoute,
-      themeMode: ThemeMode.light,
-      theme: lightTheme,
+      themeMode: ThemeMode.dark,
+      darkTheme: appTheme,
       home: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           if (state is AuthFailure)
             return OnboardingScreen(
               userRepository: _userRepository,
             );
-          if (state is AuthSucess) return HomeScreen(user: state.firebaseUser);
+          if (state is AuthSucess) return AppLayout(user: state.firebaseUser);
 
           return Scaffold(
             appBar: AppBar(),

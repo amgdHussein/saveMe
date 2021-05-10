@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-void showErrorNetworkDiag(context) async {
+void showErrorNetworkDialog(context) async {
   return showDialog(
     context: context,
     barrierDismissible: false,
@@ -19,15 +19,12 @@ void showErrorNetworkDiag(context) async {
               width: double.infinity,
               height: 40,
               child: MaterialButton(
-                child: Text(
-                  "Dismiss",
-                  style: TextStyle(color: Colors.blueGrey),
-                ),
+                child: Text("Dismiss"),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -1,79 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../widgets/app_bar.dart';
 
-import '../../../config/themes/colors.dart';
-import '../../../widgets/app_drawer.dart';
+class HomeScreen extends StatefulWidget {
+  final User user;
+  HomeScreen({Key key, @required this.user}) : super(key: key);
 
-import '../../../widgets/posts_view.dart';
-import '../cubit/save_me_cubit.dart';
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
 
-class HomeScreen extends StatelessWidget {
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    // final Size pageSize = MediaQuery.of(context).size;
+    GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     return Scaffold(
       key: _scaffoldKey,
-      drawer: AppDrawer(),
-      appBar: AppBar(
-        title: RichText(
-          text: TextSpan(
-            style: Theme.of(context).textTheme.headline2,
-            children: [
-              TextSpan(
-                text: "save",
-                style: TextStyle(
-                  color: GRAY_CHATEAU,
-                ),
-              ),
-              TextSpan(
-                text: "Me",
-                style: TextStyle(color: ABBEY),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search_rounded),
-            onPressed: () => Navigator.pushNamed(context, 'search'),
-          ),
-        ],
-      ),
-      body: GestureDetector(
-        onHorizontalDragEnd: (DragEndDetails details) {
-          if (details.primaryVelocity > 0) {
-            _scaffoldKey.currentState.openDrawer();
-          }
-        },
-        onTap: () {
-          _scaffoldKey.currentState.openDrawer();
-        },
-        child: PostsView(
-          posts: SaveMeCubit.get(context).posts,
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {},
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.edit,
-              color: Theme.of(context).canvasColor,
-            ),
-            Text(
-              "Report",
-              style: TextStyle(
-                fontSize: 10,
-                color: Theme.of(context).canvasColor,
-              ),
-            ),
-          ],
-        ),
-      ),
+      appBar: appBar(context, isAppTitle: true, disableBack: true),
+      // body:
     );
   }
 }
-
-// Icons.camera_alt_rounded,
