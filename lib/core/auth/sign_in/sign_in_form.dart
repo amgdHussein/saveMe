@@ -1,5 +1,4 @@
 // import 'package:bloc_provider/bloc_provider.dart';
-import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +7,8 @@ import 'package:save_me/core/auth/blocs/auth_bloc.dart';
 import 'package:save_me/core/auth/sign_in/bloc/sign_in_bloc.dart';
 import 'package:save_me/core/auth/sign_up/sign_up.dart';
 import 'package:save_me/modules/save_me/repositories/user_repository.dart';
-import 'package:save_me/utils/ui/app_dialogs.dart';
+import 'package:save_me/widgets/snack_bars/error_snack_bar.dart';
+import 'package:save_me/widgets/snack_bars/submitting_snack_bar.dart';
 
 class SignInForm extends StatefulWidget {
   final UserRepository _userRepository;
@@ -24,7 +24,6 @@ class _SignInFormState extends State<SignInForm> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool secure = true;
 
   bool get isPopulated =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
@@ -45,42 +44,18 @@ class _SignInFormState extends State<SignInForm> {
   Widget build(BuildContext context) {
     return BlocListener<SignInBloc, SignInState>(
       listener: (context, state) {
-        if (state.isFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.brown[100],
-              content: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Sign-in Failure"),
-                  Icon(Icons.error_rounded),
-                ],
-              ),
-            ),
-          );
-        }
+        if (state.isFailure)
+          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar());
 
-        if (state.isSubmitting) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.green[100],
-              content: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Signing In..."),
-                  CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
+        if (state.isSubmitting)
+          ScaffoldMessenger.of(context).showSnackBar(submittingSnackBar(
+            context: context,
+          ));
 
-        if (state.isSuccess)
-          BlocProvider.of<AuthBloc>(context).add(
-            AuthSignedIn(),
-          );
+        if (state.isSuccess) {
+          BlocProvider.of<AuthBloc>(context).add(AuthSignedIn());
+          Navigator.pop(context);
+        }
       },
       child: BlocBuilder<SignInBloc, SignInState>(
         builder: (context, state) {
@@ -95,7 +70,7 @@ class _SignInFormState extends State<SignInForm> {
                   keyboardType: TextInputType.emailAddress,
                   autocorrect: false,
                   decoration: InputDecoration(
-                    suffixIcon: Icon(Icons.person_rounded),
+                    suffixIcon: Icon(Icons.email_rounded),
                     labelText: "Email Address",
                   ),
                   validator: (_) =>
@@ -113,7 +88,7 @@ class _SignInFormState extends State<SignInForm> {
                 TextFormField(
                   controller: _passwordController,
                   keyboardType: TextInputType.visiblePassword,
-                  obscureText: secure,
+                  obscureText: true,
                   autocorrect: false,
                   decoration: InputDecoration(
                     suffixIcon: Icon(Icons.vpn_key_rounded),
@@ -131,25 +106,15 @@ class _SignInFormState extends State<SignInForm> {
                   },
                 ),
                 SizedBox(height: 30),
-                
-                // for bloc addition
-                FutureBuilder(
-                  future: DataConnectionChecker().hasConnection,
-                  builder: (context, snapshot) {
-                    return SizedBox(
-                      width: double.infinity,
-                      child: FloatingActionButton(
-                        child: Text("Sign In"),
-                        onPressed: () {
-                          if (!snapshot.data)
-                            showErrorNetworkDiag(context);
-                          else if (isButtonEnabled(state)) _onFormSubmitted();
-                        },
-                      ),
-                    );
-                  },
+                SizedBox(
+                  width: double.infinity,
+                  child: FloatingActionButton(
+                    child: Text("Sign Un"),
+                    onPressed: () {
+                      if (isButtonEnabled(state)) _onFormSubmitted();
+                    },
+                  ),
                 ),
-
                 SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {

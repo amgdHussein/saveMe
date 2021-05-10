@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../widgets/app_logo.dart';
 import 'sign_up_form.dart';
 import '../../../modules/save_me/repositories/user_repository.dart';
 import '../../../config/themes/colors.dart';
@@ -28,23 +29,11 @@ class SignUpScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "save",
-                          style: Theme.of(context).textTheme.headline2.copyWith(
-                                color: GRAY_CHATEAU,
-                              ),
+                  logoRichText(
+                    textStyle1: Theme.of(context).textTheme.headline2.copyWith(
+                          color: GRAY_CHATEAU
                         ),
-                        TextSpan(
-                          text: "Me",
-                          style: Theme.of(
-                            context,
-                          ).textTheme.headline2,
-                        ),
-                      ],
-                    ),
+                    textStyle2: Theme.of(context).textTheme.headline2,
                   ),
                   SizedBox(height: 30),
                   Text(
