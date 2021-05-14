@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../sign_up/sign_up.dart';
+import '../../../widgets/app_bar.dart';
 import '../../../widgets/app_logo.dart';
 import 'sign_in_form.dart';
 import '../../../modules/save_me/repositories/user_repository.dart';
@@ -16,7 +18,12 @@ class SignInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(leadingWidth: 30, title: Text("Back")),
+      appBar: appBar(
+        context,
+        isAppTitle: false,
+        disableBack: false,
+        title: "Back to on boarding",
+      ),
       body: BlocProvider<SignInBloc>(
         create: (context) => SignInBloc(userRepository: _userRepository),
         child: Center(
@@ -29,10 +36,14 @@ class SignInScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   logoRichText(
-                    textStyle1: Theme.of(context).textTheme.headline2.copyWith(
-                          color: GRAY_CHATEAU,
-                        ),
-                    textStyle2: Theme.of(context).textTheme.headline2,
+                    textStyle1: Theme.of(context)
+                        .textTheme
+                        .headline2
+                        .copyWith(color: GRAY_CHATEAU),
+                    textStyle2: Theme.of(context)
+                        .textTheme
+                        .headline2
+                        .copyWith(color: ABBEY),
                   ),
                   SizedBox(height: 30),
                   Text(
@@ -43,10 +54,53 @@ class SignInScreen extends StatelessWidget {
                     "Sing In",
                     style: Theme.of(context).textTheme.headline3.copyWith(
                           fontWeight: FontWeight.bold,
+                          color: Colors.black87,
                         ),
                   ),
                   SizedBox(height: 70),
-                  SignInForm(userRepository: _userRepository),
+                  SignInForm(),
+                  SizedBox(height: 20),
+                  Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SignUpScreen(
+                                userRepository: _userRepository,
+                              ),
+                            ),
+                          );
+                        },
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "New to ",
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                              TextSpan(
+                                text: "save",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .button
+                                    .copyWith(color: GRAY_CHATEAU),
+                              ),
+                              TextSpan(
+                                text: "Me",
+                                style: Theme.of(context).textTheme.button,
+                              ),
+                              TextSpan(
+                                text: "? Sign up now.",
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

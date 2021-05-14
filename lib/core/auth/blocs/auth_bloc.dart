@@ -29,7 +29,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Stream<AuthState> _mapAuthStartedToState() async* {
     final isSignedIn = await _userRepository.isSignedIn();
     if (isSignedIn) {
-      final user = _userRepository.getUser();
+      final User user = _userRepository.getUser();
       yield AuthSucess(user);
     } else {
       yield AuthFailure();

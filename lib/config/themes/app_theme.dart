@@ -4,6 +4,7 @@ import 'colors.dart';
 ThemeData appTheme = ThemeData(
   primarySwatch: ABBEY,
   canvasColor: ATHENS_GRAY,
+  visualDensity: VisualDensity.adaptivePlatformDensity,
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     type: BottomNavigationBarType.fixed,
     // elevation: 0.0,
@@ -11,6 +12,7 @@ ThemeData appTheme = ThemeData(
     unselectedIconTheme: IconThemeData(opacity: 0.3, size: 30),
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
+    backgroundColor: ABBEY,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(5),
     ),

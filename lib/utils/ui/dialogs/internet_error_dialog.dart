@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-void showErrorNetworkDialog(context) async {
-  return showDialog(
+Future<void> showErrorNetworkDialog(context) async {
+  return await showDialog(
     context: context,
     barrierDismissible: false,
     builder: (context) => AlertDialog(
@@ -9,7 +9,7 @@ void showErrorNetworkDialog(context) async {
       title: Text('Error'),
       content: SingleChildScrollView(
         child: ListBody(
-          children: <Widget>[
+          children: [
             Container(
               child: Text('An unknown network error has cccurred.'),
               padding: EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0),

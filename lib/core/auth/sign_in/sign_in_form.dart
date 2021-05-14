@@ -2,19 +2,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:save_me/config/themes/colors.dart';
 import 'package:save_me/core/auth/blocs/auth_bloc.dart';
 import 'package:save_me/core/auth/sign_in/bloc/sign_in_bloc.dart';
-import 'package:save_me/core/auth/sign_up/sign_up.dart';
-import 'package:save_me/modules/save_me/repositories/user_repository.dart';
-import 'package:save_me/widgets/snack_bars/error_snack_bar.dart';
-import 'package:save_me/widgets/snack_bars/submitting_snack_bar.dart';
+import 'package:save_me/utils/mixins/validation_mixins.dart';
+import 'package:save_me/widgets/snack_bars/sign_in_failure.dart';
+import 'package:save_me/widgets/snack_bars/sign_in_submitting.dart';
 
 class SignInForm extends StatefulWidget {
-  final UserRepository _userRepository;
-  SignInForm({Key key, UserRepository userRepository})
-      : _userRepository = userRepository,
-        super(key: key);
+  SignInForm({Key key}) : super(key: key);
 
   @override
   _SignInFormState createState() => _SignInFormState();
@@ -45,10 +40,10 @@ class _SignInFormState extends State<SignInForm> {
     return BlocListener<SignInBloc, SignInState>(
       listener: (context, state) {
         if (state.isFailure)
-          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar());
+          ScaffoldMessenger.of(context).showSnackBar(singInFailureSnackBar());
 
         if (state.isSubmitting)
-          ScaffoldMessenger.of(context).showSnackBar(submittingSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(signInSubmittingSnackBar(
             context: context,
           ));
 
@@ -73,8 +68,7 @@ class _SignInFormState extends State<SignInForm> {
                     suffixIcon: Icon(Icons.email_rounded),
                     labelText: "Email Address",
                   ),
-                  validator: (_) =>
-                      !state.isEmailValid ? "Invalid Email." : null,
+                  validator: Validators.isValidEmail,
                   onChanged: (email) {
                     _emailController.text = email;
                     _emailController.selection = TextSelection.fromPosition(
@@ -94,8 +88,7 @@ class _SignInFormState extends State<SignInForm> {
                     suffixIcon: Icon(Icons.vpn_key_rounded),
                     labelText: "Password",
                   ),
-                  validator: (_) =>
-                      !state.isPasswordValid ? "Invalid Password." : null,
+                  validator: Validators.isValidPassword,
                   onChanged: (password) {
                     _passwordController.text = password;
                     _passwordController.selection = TextSelection.fromPosition(
@@ -109,48 +102,10 @@ class _SignInFormState extends State<SignInForm> {
                 SizedBox(
                   width: double.infinity,
                   child: FloatingActionButton(
-                    child: Text("Sign Un"),
+                    child: Text("Sign In"),
                     onPressed: () {
                       if (isButtonEnabled(state)) _onFormSubmitted();
                     },
-                  ),
-                ),
-                SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => SignUpScreen(
-                          userRepository: widget._userRepository,
-                        ),
-                      ),
-                    );
-                  },
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "New to ",
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                        TextSpan(
-                          text: "save",
-                          style: Theme.of(context)
-                              .textTheme
-                              .button
-                              .copyWith(color: GRAY_CHATEAU),
-                        ),
-                        TextSpan(
-                          text: "Me",
-                          style: Theme.of(context).textTheme.button,
-                        ),
-                        TextSpan(
-                          text: "? Sign up now.",
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ],
-                    ),
                   ),
                 ),
               ],

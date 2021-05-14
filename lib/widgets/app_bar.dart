@@ -4,8 +4,8 @@ import 'app_logo.dart';
 AppBar appBar(
   context, {
   @required bool isAppTitle,
+  bool disableBack = false,
   String title,
-  @required bool disableBack,
 }) =>
     AppBar(
       automaticallyImplyLeading: !disableBack,

@@ -84,13 +84,7 @@ class SignUpState {
     );
   }
 
-  // @override
-  // List<Object> get props =>
-  //     [isEmailValid, isPasswordValid, isSubmitting, isSuccess, isFailure];
-
-       @override
+  @override
   String toString() =>
       'SignUpState(isEmailValid: $isEmailValid, isPasswordValid: $isPasswordValid, isSubmitting: $isSubmitting, isSuccess: $isSuccess, isFailure: $isFailure)';
-
-
 }

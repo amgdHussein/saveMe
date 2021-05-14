@@ -28,12 +28,12 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
   }
 
   Stream<SignInState> _mapSignInEmailChangeToState({String email}) async* {
-    yield state.update(isEmailValid: Validators.isValidEmail(email));
+    yield state.update(isEmailValid: Validators.isValidEmail(email) == null);
   }
 
   Stream<SignInState> _mapSignInPasswordChangeToState(
       {String password}) async* {
-    yield state.update(isPasswordValid: Validators.isValidPassword(password));
+    yield state.update(isPasswordValid: Validators.isValidPassword(password) == null);
   }
 
   Stream<SignInState> _mapSignInWithCredentialsPressedToState({

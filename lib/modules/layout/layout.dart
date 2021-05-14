@@ -1,17 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cubit/layout_cubit.dart';
 
 class AppLayout extends StatelessWidget {
-  final User user;
-  AppLayout({Key key, @required this.user}) : super(key: key);
+  AppLayout({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LayoutCubit(user: user),
+      create: (context) => LayoutCubit(),
       child: BlocBuilder<LayoutCubit, LayoutState>(
         builder: (context, state) {
           return Scaffold(

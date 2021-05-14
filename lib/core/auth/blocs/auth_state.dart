@@ -16,4 +16,10 @@ class AuthSucess extends AuthState {
   List<Object> get props => [firebaseUser];
 }
 
-class AuthFailure extends AuthState {}
+class AuthFailure extends AuthState {
+  // final String error;
+  // AuthFailure({@required this.error});
+
+  // @override
+  // String toString() => 'AuthFailure(error: $error)';
+}

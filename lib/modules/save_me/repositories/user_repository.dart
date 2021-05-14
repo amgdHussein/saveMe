@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class UserRepository {
   final FirebaseAuth _firebaseAuth;
 
-  UserRepository({FirebaseAuth firebaseAuth})
+  UserRepository({@required FirebaseAuth firebaseAuth})
       : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
 
   Future<void> singInWithCredentials({

@@ -30,12 +30,12 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   }
 
   Stream<SignUpState> _mapSignUpEmailChangeToState(String email) async* {
-    yield state.update(isEmailValid: Validators.isValidEmail(email));
+    yield state.update(isEmailValid: Validators.isValidEmail(email) == null);
   }
 
-
   Stream<SignUpState> _mapSignUpPasswordChangeToState(String password) async* {
-    yield state.update(isPasswordValid: Validators.isValidPassword(password));
+    yield state.update(
+        isPasswordValid: Validators.isValidPassword(password) == null);
   }
 
   Stream<SignUpState> _mapSignUpSubmittedToState({
@@ -51,7 +51,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       );
       yield SignUpState.success();
     } catch (error) {
-      print(error);
       yield SignUpState.failure();
     }
   }
