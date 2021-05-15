@@ -10,13 +10,13 @@ class Validators {
   );
 
   static final RegExp _mobileRegExp = RegExp(
-    r'^1[0-9]{9}',
+    r'^1(?=[0125])[0-9]{9}',
   );
 
   static String isValidEmail(String email) {
     if (email.isEmpty)
       return 'Email is required.';
-    else if (!_emailRegExp.hasMatch(email.trim()))
+    else if (!_emailRegExp.hasMatch(email))
       return "Invalid Email.";
     else
       return null;
@@ -43,7 +43,7 @@ class Validators {
   static String isValidUserName(String userName) {
     if (userName.isEmpty)
       return 'User name is required.';
-    else if (!_nameRegExp.hasMatch(userName.trim()))
+    else if (!_nameRegExp.hasMatch(userName))
       return 'Invalid user name.';
     else
       return null;
