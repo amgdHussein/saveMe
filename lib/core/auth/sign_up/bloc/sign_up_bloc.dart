@@ -20,33 +20,47 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   Stream<SignUpState> mapEventToState(SignUpEvent event) async* {
     if (event is SignUpEmailChange)
       yield* _mapSignUpEmailChangeToState(event.email);
+    else if (event is SignUpNameChange)
+      yield* _mapSignUpNameChangeToState(event.userName);
     else if (event is SignUpPasswordChange)
       yield* _mapSignUpPasswordChangeToState(event.password);
     else if (event is SignUpSubmitted)
       yield* _mapSignUpSubmittedToState(
         email: event.email,
+        userName: event.userName,
         password: event.password,
       );
   }
 
   Stream<SignUpState> _mapSignUpEmailChangeToState(String email) async* {
-    yield state.update(isEmailValid: Validators.isValidEmail(email) == null);
+    yield state.update(
+      isEmailValid: Validators.isValidEmail(email) == null,
+    );
   }
 
   Stream<SignUpState> _mapSignUpPasswordChangeToState(String password) async* {
     yield state.update(
-        isPasswordValid: Validators.isValidPassword(password) == null);
+      isPasswordValid: Validators.isValidPassword(password) == null,
+    );
+  }
+
+  Stream<SignUpState> _mapSignUpNameChangeToState(String userName) async* {
+    yield state.update(
+      isNameValid: Validators.isValidUserName(userName) == null,
+    );
   }
 
   Stream<SignUpState> _mapSignUpSubmittedToState({
-    String email,
-    String password,
+    @required String email,
+    @required String password,
+    @required String userName,
   }) async* {
     yield SignUpState.loading();
 
     try {
       await _userRepository.singUpWithCredentials(
         email: email,
+        userName: userName,
         password: password,
       );
       yield SignUpState.success();

@@ -17,6 +17,18 @@ class SignUpEmailChange extends SignUpEvent {
   String toString() => 'SignUpEmailChange(email: $email)';
 }
 
+class SignUpNameChange extends SignUpEvent {
+  final String userName;
+
+  SignUpNameChange({this.userName});
+
+  @override
+  List<Object> get props => [userName];
+
+  @override
+  String toString() => 'SignUpNameChange(userName: $userName)';
+}
+
 class SignUpPasswordChange extends SignUpEvent {
   final String password;
 
@@ -31,13 +43,15 @@ class SignUpPasswordChange extends SignUpEvent {
 
 class SignUpSubmitted extends SignUpEvent {
   final String email;
+  final String userName;
   final String password;
 
-  SignUpSubmitted({this.email, this.password});
+  SignUpSubmitted({this.email, this.userName, this.password});
 
   @override
-  List<Object> get props => [email, password];
+  List<Object> get props => [email, userName, password];
 
   @override
-  String toString() => 'SignUpSubmitted(email: $email, password: $password)';
+  String toString() =>
+      'SignUpSubmitted(email: $email, userName: $userName, password: $password)';
 }

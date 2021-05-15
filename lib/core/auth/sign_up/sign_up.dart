@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../widgets/app_bar.dart';
 import '../../../widgets/app_logo.dart';
 import 'sign_up_form.dart';
 import '../../../modules/save_me/repositories/user_repository.dart';
@@ -17,50 +16,113 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: appBar(
-        context,
-        isAppTitle: false,
-        disableBack: false,
-        title: "Back to sign in",
-      ),
       body: BlocProvider(
         create: (context) => SignUpBloc(userRepository: _userRepository),
         child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: Stack(
                 children: [
-                  logoRichText(
-                    textStyle1: Theme.of(context)
-                        .textTheme
-                        .headline2
-                        .copyWith(color: GRAY_CHATEAU),
-                    textStyle2: Theme.of(context)
-                        .textTheme
-                        .headline2
-                        .copyWith(color: ABBEY),
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 400,
+                    child: Container(
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
-                  SizedBox(height: 30),
-                  Text(
-                    "Proceed with your",
-                    style: Theme.of(
-                      context,
-                    ).textTheme.headline3,
+                  Positioned(
+                    top: 50,
+                    left: 20,
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
                   ),
-                  Text(
-                    "Sing Up",
-                    style: Theme.of(context).textTheme.headline3.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
+                  Positioned(
+                    top: 120,
+                    left: 50,
+                    child: logoRichText(
+                      textStyle1: Theme.of(context)
+                          .textTheme
+                          .headline2
+                          .copyWith(color: GRAY_CHATEAU),
+                      textStyle2: Theme.of(context)
+                          .textTheme
+                          .headline2
+                          .copyWith(color: Colors.white),
+                    ),
+                  ),
+                  Positioned(
+                    top: 160,
+                    left: 50,
+                    child: RichText(
+                      text: TextSpan(
+                        style: TextStyle(fontSize: 18),
+                        children: [
+                          TextSpan(text: "Proceed with your "),
+                          TextSpan(
+                            text: "Sign Up",
+                            style: TextStyle(fontWeight: FontWeight.w900),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 200,
+                    right: 20,
+                    left: 20,
+                    child: SignUpForm(),
+                  ),
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 50,
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Already have an ",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    .copyWith(
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                              ),
+                              TextSpan(
+                                text: "account? ",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    .copyWith(
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                              ),
+                              TextSpan(
+                                text: "Sign In",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    .copyWith(fontWeight: FontWeight.w900),
+                              ),
+                            ],
+                          ),
                         ),
+                      ),
+                    ),
                   ),
-                  SizedBox(height: 70),
-                  SignUpForm()
                 ],
               ),
             ),

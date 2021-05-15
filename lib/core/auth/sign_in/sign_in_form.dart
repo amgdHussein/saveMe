@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:save_me/core/auth/blocs/auth_bloc.dart';
 import 'package:save_me/core/auth/sign_in/bloc/sign_in_bloc.dart';
 import 'package:save_me/utils/mixins/validation_mixins.dart';
@@ -49,66 +50,73 @@ class _SignInFormState extends State<SignInForm> {
 
         if (state.isSuccess) {
           BlocProvider.of<AuthBloc>(context).add(AuthSignedIn());
-          Navigator.pop(context);
+          Phoenix.rebirth(context);
         }
       },
       child: BlocBuilder<SignInBloc, SignInState>(
         builder: (context, state) {
-          return Form(
-            key: _formKey,
-            autovalidateMode: AutovalidateMode.always,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    suffixIcon: Icon(Icons.email_rounded),
-                    labelText: "Email Address",
-                  ),
-                  validator: Validators.isValidEmail,
-                  onChanged: (email) {
-                    _emailController.text = email;
-                    _emailController.selection = TextSelection.fromPosition(
-                      TextPosition(
-                        offset: _emailController.text.length,
+          return Card(
+            color: Theme.of(context).canvasColor,
+            child: Form(
+              key: _formKey,
+              autovalidateMode: AutovalidateMode.always,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    TextFormField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        suffixIcon: Icon(Icons.email_rounded),
+                        labelText: "Email Address",
                       ),
-                    );
-                  },
-                ),
-                SizedBox(height: 15),
-                TextFormField(
-                  controller: _passwordController,
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: true,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    suffixIcon: Icon(Icons.vpn_key_rounded),
-                    labelText: "Password",
-                  ),
-                  validator: Validators.isValidPassword,
-                  onChanged: (password) {
-                    _passwordController.text = password;
-                    _passwordController.selection = TextSelection.fromPosition(
-                      TextPosition(
-                        offset: _passwordController.text.length,
+                      validator: Validators.isValidEmail,
+                      onChanged: (email) {
+                        _emailController.text = email;
+                        _emailController.selection = TextSelection.fromPosition(
+                          TextPosition(
+                            offset: _emailController.text.length,
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 15),
+                    TextFormField(
+                      controller: _passwordController,
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: true,
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        suffixIcon: Icon(Icons.vpn_key_rounded),
+                        labelText: "Password",
                       ),
-                    );
-                  },
+                      validator: Validators.isValidPassword,
+                      onChanged: (password) {
+                        _passwordController.text = password;
+                        _passwordController.selection =
+                            TextSelection.fromPosition(
+                          TextPosition(
+                            offset: _passwordController.text.length,
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FloatingActionButton(
+                        child: Text("Sign In"),
+                        onPressed: () {
+                          if (isButtonEnabled(state)) _onFormSubmitted();
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 30),
-                SizedBox(
-                  width: double.infinity,
-                  child: FloatingActionButton(
-                    child: Text("Sign In"),
-                    onPressed: () {
-                      if (isButtonEnabled(state)) _onFormSubmitted();
-                    },
-                  ),
-                ),
-              ],
+              ),
             ),
           );
         },

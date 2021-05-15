@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:save_me/core/auth/blocs/auth_bloc.dart';
 import 'package:save_me/utils/mixins/validation_mixins.dart';
 import 'package:save_me/widgets/snack_bars/sign_in_failure.dart';
@@ -16,12 +17,16 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
 
   bool get isPopulated =>
-      _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
+      _emailController.text.isNotEmpty &&
+      _passwordController.text.isNotEmpty &&
+      _userNameController.text.isNotEmpty;
 
   bool isButtonEnabled(SignUpState state) =>
       state.isFormValid && this.isPopulated && !state.isSubmitting;
@@ -33,6 +38,7 @@ class _SignUpFormState extends State<SignUpForm> {
     _signUpBloc = BlocProvider.of<SignUpBloc>(context);
     _emailController.addListener(_onEmailChange);
     _passwordController.addListener(_onPasswordChange);
+    _userNameController.addListener(_onNameChange);
   }
 
   @override
@@ -49,66 +55,116 @@ class _SignUpFormState extends State<SignUpForm> {
 
         if (state.isSuccess) {
           BlocProvider.of<AuthBloc>(context).add(AuthSignedIn());
-          Navigator.popUntil(context, (route) => route.isFirst);
+          Phoenix.rebirth(context);
         }
       },
       child: BlocBuilder<SignUpBloc, SignUpState>(
         builder: (context, state) {
-          return Form(
-            key: _formKey,
-            autovalidateMode: AutovalidateMode.always,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    suffixIcon: Icon(Icons.email_rounded),
-                    labelText: "Email Address",
-                  ),
-                  validator: Validators.isValidEmail,
-                  onChanged: (email) {
-                    _emailController.text = email;
-                    _emailController.selection = TextSelection.fromPosition(
-                      TextPosition(
-                        offset: _emailController.text.length,
+          return Card(
+            color: Theme.of(context).canvasColor,
+            child: Form(
+              key: _formKey,
+              autovalidateMode: AutovalidateMode.always,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    TextFormField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        suffixIcon: Icon(Icons.email_rounded),
+                        labelText: "Email Address",
                       ),
-                    );
-                  },
-                ),
-                SizedBox(height: 15),
-                TextFormField(
-                  controller: _passwordController,
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: true,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    suffixIcon: Icon(Icons.vpn_key_rounded),
-                    labelText: "Password",
-                  ),
-                  validator: Validators.isValidPassword,
-                  onChanged: (password) {
-                    _passwordController.text = password;
-                    _passwordController.selection = TextSelection.fromPosition(
-                      TextPosition(
-                        offset: _passwordController.text.length,
+                      validator: Validators.isValidEmail,
+                      onChanged: (email) {
+                        _emailController.text = email;
+                        _emailController.selection = TextSelection.fromPosition(
+                          TextPosition(
+                            offset: _emailController.text.length,
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 15),
+                    TextFormField(
+                      controller: _userNameController,
+                      keyboardType: TextInputType.name,
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        suffixIcon: Icon(Icons.person_rounded),
+                        labelText: "Username",
                       ),
-                    );
-                  },
+                      validator: Validators.isValidUserName,
+                      onChanged: (name) {
+                        _userNameController.text = name;
+                        _userNameController.selection =
+                            TextSelection.fromPosition(
+                          TextPosition(
+                            offset: _userNameController.text.length,
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 15),
+                    TextFormField(
+                      controller: _passwordController,
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: true,
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        suffixIcon: Icon(Icons.vpn_key_rounded),
+                        labelText: "Password",
+                      ),
+                      validator: Validators.isValidPassword,
+                      onChanged: (password) {
+                        _passwordController.text = password;
+                        _passwordController.selection =
+                            TextSelection.fromPosition(
+                          TextPosition(
+                            offset: _passwordController.text.length,
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 15),
+                    TextFormField(
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        prefix: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text("+20"),
+                        ),
+                        suffixIcon: Icon(Icons.phone_android_rounded),
+                        labelText: "Phone Number",
+                      ),
+                      validator: Validators.isValidPhoneNumber,
+                      onChanged: (phone) {
+                        _phoneController.text = phone;
+                        _phoneController.selection = TextSelection.fromPosition(
+                          TextPosition(
+                            offset: _phoneController.text.length,
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FloatingActionButton(
+                        child: Text("Sign Up"),
+                        onPressed: () {
+                          if (isButtonEnabled(state)) _onFormSubmitted();
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 30),
-                SizedBox(
-                  width: double.infinity,
-                  child: FloatingActionButton(
-                    child: Text("Sign Up"),
-                    onPressed: () {
-                      if (isButtonEnabled(state)) _onFormSubmitted();
-                    },
-                  ),
-                ),
-              ],
+              ),
             ),
           );
         },
@@ -120,6 +176,7 @@ class _SignUpFormState extends State<SignUpForm> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _userNameController.dispose();
     super.dispose();
   }
 
@@ -127,6 +184,14 @@ class _SignUpFormState extends State<SignUpForm> {
     _signUpBloc.add(
       SignUpEmailChange(
         email: _emailController.text,
+      ),
+    );
+  }
+
+  void _onNameChange() {
+    _signUpBloc.add(
+      SignUpNameChange(
+        userName: _userNameController.text,
       ),
     );
   }
@@ -143,6 +208,7 @@ class _SignUpFormState extends State<SignUpForm> {
     _signUpBloc.add(
       SignUpSubmitted(
         email: _emailController.text,
+        userName: _userNameController.text,
         password: _passwordController.text,
       ),
     );
