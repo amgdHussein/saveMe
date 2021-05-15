@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:save_me/constants/assest_path.dart';
 
 class UserRepository {
   final FirebaseAuth _firebaseAuth;
@@ -11,20 +12,28 @@ class UserRepository {
     @required String email,
     @required String password,
   }) async {
-    return await _firebaseAuth.signInWithEmailAndPassword(
+    UserCredential user = await _firebaseAuth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
+    return user;
   }
 
   Future<void> singUpWithCredentials({
     @required String email,
     @required String password,
+    @required String userName,
   }) async {
-    return await _firebaseAuth.createUserWithEmailAndPassword(
+    UserCredential user = await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
+    await _firebaseAuth.currentUser.reload();
+    await _firebaseAuth.currentUser.updateProfile(
+      displayName: userName,
+      photoURL: defaultPhotoURL,
+    );
+    return user;
   }
 
   Future<void> singOut() async {
