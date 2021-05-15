@@ -30,11 +30,7 @@ class ProfileEditScreen extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage(
-                        state.user.photoURL == null
-                            ? defaultPhotoURL
-                            : state.user.photoURL,
-                      ),
+                      image: NetworkImage(state.user.photoURL),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -62,11 +58,7 @@ class ProfileEditScreen extends StatelessWidget {
                         children: [
                           CircleAvatar(
                             radius: 70,
-                            backgroundImage: NetworkImage(
-                              state.user.photoURL == null
-                                  ? defaultPhotoURL
-                                  : state.user.photoURL,
-                            ),
+                            backgroundImage: NetworkImage(state.user.photoURL),
                           ),
                           CircleAvatar(
                             child: state is UploadingPhoto
@@ -131,6 +123,11 @@ class ProfileEditScreen extends StatelessWidget {
                       BlocProvider.of<ProfileCubit>(context).updateName(
                         name: _userNameController.text,
                       );
+
+                      if (state.user.photoURL == null)
+                        BlocProvider.of<ProfileCubit>(context).updatePhoto(
+                          url: defaultPhotoURL,
+                        );
                     }
                     Navigator.pop(context);
                   },

@@ -17,7 +17,6 @@ class _ProfileScreenState extends State<ProfileScreen>
     with TickerProviderStateMixin {
   // ScrollController _scrollController = ScrollController();
   TabController _tabController;
-  bool _pinned = true;
 
   @override
   void initState() {
@@ -37,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             // controller: _scrollController,
             headerSliverBuilder: (context, bool innerBoxIsScrolled) => [
               SliverAppBar(
-                pinned: _pinned,
+                pinned: true,
                 elevation: 0,
                 expandedHeight: 300.0,
                 actions: [
@@ -63,7 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 ),
               ),
               SliverAppBar(
-                pinned: _pinned,
+                pinned: true,
                 elevation: 0,
                 toolbarHeight: 0.0,
                 backgroundColor: Colors.transparent,
@@ -118,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             "https://images.unsplash.com/photo-1620761999597-72dc58cb1f3b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80",
             fit: BoxFit.fitWidth,
           ),
-          separatorBuilder: (context, index) => Divider(height: 1),
+          separatorBuilder: (context, index) => Divider(height: 3),
           itemCount: 5,
         ),
       );

@@ -1,50 +1,48 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:save_me/modules/save_me/screens/profile/cubit/profile_cubit.dart';
-import 'package:save_me/utils/ui/dialogs/email_verification.dart';
 import '../../../core/auth/blocs/auth_bloc.dart';
-import '../repositories/user_repository.dart';
-import 'profile/edit_profile.dart';
 import '../../../widgets/app_bar.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key key}) : super(key: key);
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final UserRepository _userRepository =
-      UserRepository(firebaseAuth: FirebaseAuth.instance);
 
   @override
   Widget build(BuildContext context) {
-    if (_userRepository.getUser().displayName == null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ProfileEditScreen()),
-      );
-    }
-
-    return GestureDetector(
-      onTap: () {
-        if (!_userRepository.getUser().emailVerified)
-          showEmailVerificationDialog(context);
-      },
-      child: Scaffold(
-        key: _scaffoldKey,
-        appBar: appBar(context, isAppTitle: true, disableBack: true),
-        body: Center(
-          child: BlocConsumer<ProfileCubit, ProfileState>(
-            listener: (context, state) {},
-            builder: (context, state) {
-              return MaterialButton(
-                child: Text("Sign out"),
-                onPressed: () {
-                  BlocProvider.of<AuthBloc>(context).add(AuthSignedOut());
-                },
-              );
-            },
-          ),
-        ),
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: appBar(context, isAppTitle: true, disableBack: true),
+      body: BlocBuilder<ProfileCubit, ProfileState>(
+        builder: (context, state) {
+          return Stack(
+            children: [
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 400,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 50,
+                      width: 100,
+                      child: FloatingActionButton(
+                        child: Text("Sign out"),
+                        onPressed: () {
+                          BlocProvider.of<AuthBloc>(context)
+                              .add(AuthSignedOut());
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
