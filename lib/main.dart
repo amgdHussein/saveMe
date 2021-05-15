@@ -3,8 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'core/auth/email_verification.dart';
 import 'modules/save_me/screens/profile/cubit/profile_cubit.dart';
-import 'widgets/app_bar.dart';
 import 'core/on_boarding/on_boarding.dart';
 import 'modules/layout/layout.dart';
 import 'modules/save_me/repositories/user_repository.dart';
@@ -21,11 +22,15 @@ void main() async {
     firebaseAuth: FirebaseAuth.instance,
   );
 
-  runApp(BlocProvider(
-    create: (context) =>
-        AuthBloc(userRepository: _userRepository)..add(AuthStarted()),
-    child: MyApp(userRepository: _userRepository),
-  ));
+  runApp(
+    Phoenix(
+      child: BlocProvider(
+        create: (context) =>
+            AuthBloc(userRepository: _userRepository)..add(AuthStarted()),
+        child: MyApp(userRepository: _userRepository),
+      ),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -47,12 +52,19 @@ class MyApp extends StatelessWidget {
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             if (state is AuthFailure)
-              return OnboardingScreen(userRepository: _userRepository);
+              return OnboardingScreen(
+                userRepository: _userRepository,
+              );
 
-            if (state is AuthSucess) return AppLayout();
+            if (state is AuthSucess) {
+              if (FirebaseAuth.instance.currentUser != null &&
+                  !FirebaseAuth.instance.currentUser.emailVerified) {
+                return EmailVerificationScreen();
+              }
+              return AppLayout();
+            }
 
             return Scaffold(
-              appBar: appBar(context, isAppTitle: true, disableBack: false),
               body: Center(child: CircularProgressIndicator()),
             );
           },
