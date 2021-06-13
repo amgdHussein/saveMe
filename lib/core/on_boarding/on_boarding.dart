@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_conditional_rendering/conditional.dart';
-import '../../modules/save_me/repositories/user_repository.dart';
+import '../../modules/save_me/repositories/user_auth_repository.dart';
 import '../auth/sign_in/sign_in.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../config/themes/colors.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  final UserRepository _userRepository;
-  OnboardingScreen({Key key, UserRepository userRepository})
+  final UserAuthRepository _userRepository;
+  OnboardingScreen({Key key, UserAuthRepository userRepository})
       : _userRepository = userRepository,
         super(key: key);
 

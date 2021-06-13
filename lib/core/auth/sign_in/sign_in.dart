@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../sign_up/sign_up.dart';
 import '../../../widgets/app_logo.dart';
 import 'sign_in_form.dart';
-import '../../../modules/save_me/repositories/user_repository.dart';
+import '../../../modules/save_me/repositories/user_auth_repository.dart';
 import '../../../config/themes/colors.dart';
 import 'bloc/sign_in_bloc.dart';
 
 class SignInScreen extends StatelessWidget {
-  final UserRepository _userRepository;
-  const SignInScreen({Key key, UserRepository userRepository})
+  final UserAuthRepository _userRepository;
+  const SignInScreen({Key key, UserAuthRepository userRepository})
       : _userRepository = userRepository,
         super(key: key);
 

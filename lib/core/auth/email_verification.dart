@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:save_me/modules/save_me/repositories/user_repository.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../modules/save_me/repositories/user_auth_repository.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   EmailVerificationScreen({Key key}) : super(key: key);
@@ -15,13 +16,13 @@ class EmailVerificationScreen extends StatefulWidget {
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  UserRepository _userRepository;
+  UserAuthRepository _userRepository;
   User _user;
   Timer _timer;
 
   @override
   void initState() {
-    _userRepository = UserRepository(firebaseAuth: _firebaseAuth);
+    _userRepository = UserAuthRepository(firebaseAuth: _firebaseAuth);
     _user = _firebaseAuth.currentUser;
     if (_user != null) {
       _user.sendEmailVerification();
@@ -80,8 +81,9 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
             left: 0,
             bottom: 0,
             child: Icon(
-              Icons.send_rounded,
+              FontAwesomeIcons.solidPaperPlane,
               size: 200,
+              color: Colors.white70,
             ),
           ),
           Positioned(
@@ -91,29 +93,46 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
             child: FloatingActionButton(
               backgroundColor: Theme.of(context).canvasColor,
               child: Text(
-                "Resend",
+                "Continue",
                 style: TextStyle(color: Theme.of(context).primaryColor),
               ),
-              onPressed: () async {
+              onPressed: () {
                 if (_user != null) {
-                  _user.sendEmailVerification();
                   checkEmailVerified();
                 }
               },
             ),
           ),
           Positioned(
-            left: 0,
-            right: 0,
+            left: 50,
+            right: 50,
             bottom: 20,
-            child: Text(
-              "It may take some time",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-                decoration: TextDecoration.underline,
+            child: GestureDetector(
+              onTap: () async {
+                await _user.sendEmailVerification();
+              },
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: "It may take some time, ",
+                    ),
+                    TextSpan(
+                      text: "Resend",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              textAlign: TextAlign.center,
             ),
           ),
         ],
@@ -130,13 +149,16 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   }
 
   Future<void> checkEmailVerified() async {
-    _timer = Timer.periodic(Duration(seconds: 5), (timer) async {
-      _user = _firebaseAuth.currentUser;
-      await _user.reload();
-      if (_user.emailVerified) {
-        timer.cancel();
-        Phoenix.rebirth(context);
-      }
-    });
+    _timer = Timer.periodic(
+      Duration(seconds: 5),
+      (timer) async {
+        _user = _firebaseAuth.currentUser;
+        await _user.reload();
+        if (_user.emailVerified) {
+          timer.cancel();
+          Phoenix.rebirth(context);
+        }
+      },
+    );
   }
 }

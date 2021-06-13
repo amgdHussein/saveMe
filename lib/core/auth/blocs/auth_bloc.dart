@@ -5,14 +5,14 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
-import '../../../modules/save_me/repositories/user_repository.dart';
+import '../../../modules/save_me/repositories/user_auth_repository.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final UserRepository _userRepository;
-  AuthBloc({UserRepository userRepository})
+  final UserAuthRepository _userRepository;
+  AuthBloc({UserAuthRepository userRepository})
       : _userRepository = userRepository,
         super(AuthInitial());
 
@@ -29,7 +29,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Stream<AuthState> _mapAuthStartedToState() async* {
     final isSignedIn = await _userRepository.isSignedIn();
     if (isSignedIn) {
-      final User user = _userRepository.getUser();
+      final User user = _userRepository.user;
       yield AuthSucess(user);
     } else {
       yield AuthFailure();
@@ -38,7 +38,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   // authentication signed in
   Stream<AuthState> _mapAuthSignedInToState() async* {
-    yield AuthSucess(_userRepository.getUser());
+    yield AuthSucess(_userRepository.user);
   }
 
   // authentication signed out

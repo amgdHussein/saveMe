@@ -3,14 +3,14 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../utils/mixins/validation_mixins.dart';
-import '../../../../modules/save_me/repositories/user_repository.dart';
+import '../../../../modules/save_me/repositories/user_auth_repository.dart';
 
 part 'sign_in_event.dart';
 part 'sign_in_state.dart';
 
 class SignInBloc extends Bloc<SignInEvent, SignInState> {
-  final UserRepository _userRepository;
-  SignInBloc({UserRepository userRepository})
+  final UserAuthRepository _userRepository;
+  SignInBloc({UserAuthRepository userRepository})
       : _userRepository = userRepository,
         super(SignInState.initial());
 
@@ -33,7 +33,8 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
 
   Stream<SignInState> _mapSignInPasswordChangeToState(
       {String password}) async* {
-    yield state.update(isPasswordValid: Validators.isValidPassword(password) == null);
+    yield state.update(
+        isPasswordValid: Validators.isValidPassword(password) == null);
   }
 
   Stream<SignInState> _mapSignInWithCredentialsPressedToState({
