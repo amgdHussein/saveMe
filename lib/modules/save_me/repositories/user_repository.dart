@@ -1,51 +1,35 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:save_me/constants/assest_path.dart';
+import 'package:save_me/modules/save_me/models/firestore_user.dart';
 
 class UserRepository {
-  final FirebaseAuth _firebaseAuth;
+  final _firestoreInstance = FirebaseFirestore.instance;
 
-  UserRepository({@required FirebaseAuth firebaseAuth})
-      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
-
-  Future<void> singInWithCredentials({
-    @required String email,
-    @required String password,
-  }) async {
-    UserCredential user = await _firebaseAuth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    return user;
+  Future<FirestoreUser> user(String uid) async {
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await _firestoreInstance.collection('users').doc(uid).get();
+    return FirestoreUser.fromMap(doc.data());
   }
 
-  Future<void> singUpWithCredentials({
-    @required String email,
-    @required String password,
-    @required String userName,
-  }) async {
-    UserCredential user = await _firebaseAuth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    await _firebaseAuth.currentUser.reload();
-    await _firebaseAuth.currentUser.updateProfile(
-      displayName: userName,
-      photoURL: defaultPhotoURL,
-    );
-    return user;
+  Future<void> addUser(User user) async {
+    return await _firestoreInstance
+        .collection('users')
+        .doc(user.uid)
+        .set(FirestoreUser.fromFirebaseUser(user).toMap());
   }
 
-  Future<void> singOut() async {
-    return await _firebaseAuth.signOut();
+  Stream<QuerySnapshot<Map<String, dynamic>>> get users {
+    return _firestoreInstance.collection('users').snapshots();
   }
 
-  Future<bool> isSignedIn() async {
-    final currentUser = _firebaseAuth.currentUser;
-    return currentUser != null;
+  Future<void> updateUser(User user) async {
+    return await _firestoreInstance.collection('users').doc(user.uid).set(
+          FirestoreUser.fromFirebaseUser(user).toMap(),
+          SetOptions(merge: true),
+        );
   }
 
-  User getUser() {
-    return _firebaseAuth.currentUser;
+  Future<void> deleteUser(String uid) async {
+    return await _firestoreInstance.collection('users').doc(uid).delete();
   }
 }

@@ -1,40 +1,31 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import '../../../repositories/user_repository.dart';
+import '../../../../../utils/helpers/image_pickers.dart';
+import '../../../repositories/user_auth_repository.dart';
 
 part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
-  final picker = ImagePicker();
-  final UserRepository _userRepository =
-      UserRepository(firebaseAuth: FirebaseAuth.instance);
+  final UserAuthRepository _userRepository =
+      UserAuthRepository(firebaseAuth: FirebaseAuth.instance);
   ProfileCubit()
-      : super(
-          ProfileInitial(
-            user: UserRepository(firebaseAuth: FirebaseAuth.instance).getUser(),
-          ),
-        );
+      : super(ProfileInitial(user: FirebaseAuth.instance.currentUser));
 
   void updateName({@required String name}) {
-    state.user.updateProfile(displayName: name).then((value) {
-      emit(UpdatingName(
-        user: _userRepository.getUser(),
-      ));
+    state.user.updateDisplayName(name).then((value) {
+      emit(UpdatingName(user: FirebaseAuth.instance.currentUser));
     });
   }
 
   void updatePhoto({@required String url}) {
     deletePhoto(imagePath: state.user.photoURL).then((_) {
-      state.user.updateProfile(photoURL: url).then((_) {
-        emit(UpdatingPhoto(
-          user: _userRepository.getUser(),
-        ));
+      state.user.updatePhotoURL(url).then((_) {
+        emit(UpdatingPhoto(user: FirebaseAuth.instance.currentUser));
       });
     });
   }
@@ -75,7 +66,7 @@ class ProfileCubit extends Cubit<ProfileState> {
                 leading: Icon(Icons.photo_library),
                 title: Text('Photo Library'),
                 onTap: () async {
-                  _image = await _imgFromGallery();
+                  _image = await imgFromGallery();
                   if (_image != null) uploadPhoto(imageFile: _image);
                   Navigator.of(context).pop();
                 },
@@ -84,7 +75,7 @@ class ProfileCubit extends Cubit<ProfileState> {
                 leading: Icon(Icons.photo_camera),
                 title: Text('Camera'),
                 onTap: () async {
-                  _image = await _imgFromCamera();
+                  _image = await imgFromCamera();
                   if (_image != null) uploadPhoto(imageFile: _image);
                   Navigator.of(context).pop();
                 },
@@ -94,17 +85,5 @@ class ProfileCubit extends Cubit<ProfileState> {
         );
       },
     );
-  }
-
-  // ignore: missing_return
-  Future<File> _imgFromCamera() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
-    if (pickedFile != null) return File(pickedFile.path);
-  }
-
-  // ignore: missing_return
-  Future<File> _imgFromGallery() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    if (pickedFile != null) return File(pickedFile.path);
   }
 }
