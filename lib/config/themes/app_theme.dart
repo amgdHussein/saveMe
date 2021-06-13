@@ -8,8 +8,8 @@ ThemeData appTheme = ThemeData(
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     type: BottomNavigationBarType.fixed,
     // elevation: 0.0,
-    selectedIconTheme: IconThemeData(opacity: 1.0, size: 30),
-    unselectedIconTheme: IconThemeData(opacity: 0.3, size: 30),
+    selectedIconTheme: IconThemeData(opacity: 1.0, size: 24),
+    unselectedIconTheme: IconThemeData(opacity: 0.3, size: 24),
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     backgroundColor: ABBEY,

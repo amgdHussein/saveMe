@@ -8,7 +8,7 @@ import 'core/auth/email_verification.dart';
 import 'modules/save_me/screens/profile/cubit/profile_cubit.dart';
 import 'core/on_boarding/on_boarding.dart';
 import 'modules/layout/layout.dart';
-import 'modules/save_me/repositories/user_repository.dart';
+import 'modules/save_me/repositories/user_auth_repository.dart';
 import 'utils/app_bloc_observer.dart';
 import 'config/themes/app_theme.dart';
 import 'core/auth/blocs/auth_bloc.dart';
@@ -18,7 +18,7 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  final UserRepository _userRepository = UserRepository(
+  final UserAuthRepository _userRepository = UserAuthRepository(
     firebaseAuth: FirebaseAuth.instance,
   );
 
@@ -34,8 +34,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  final UserRepository _userRepository;
-  MyApp({UserRepository userRepository}) : _userRepository = userRepository;
+  final UserAuthRepository _userRepository;
+  MyApp({UserAuthRepository userRepository}) : _userRepository = userRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => ProfileCubit()),
       ],
       child: MaterialApp(
-        title: 'save me',
+        title: 'saveMe',
         debugShowCheckedModeBanner: false,
         // onGenerateRoute: _router.generateRoute,
         themeMode: ThemeMode.dark,
