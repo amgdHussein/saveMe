@@ -1,11 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../save_me/screens/report/report.dart';
 import '../../save_me/screens/profile/profile.dart';
-import '../../save_me/screens/camera.dart';
+import '../../save_me/screens/search.dart';
 import '../../save_me/screens/chat.dart';
 import '../../save_me/screens/home.dart';
-import '../../save_me/screens/report.dart';
 
 part 'layout_state.dart';
 
@@ -15,8 +15,8 @@ class LayoutCubit extends Cubit<LayoutState> {
     screens = [
       HomeScreen(),
       ChatScreen(),
-      CameraScreen(),
       ReportScreen(),
+      SearchScreen(),
       ProfileScreen(),
     ];
 

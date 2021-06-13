@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'cubit/layout_cubit.dart';
 
 class AppLayout extends StatelessWidget {
@@ -22,27 +23,27 @@ class AppLayout extends StatelessWidget {
               },
               items: [
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home_filled),
+                  icon: Icon(FontAwesomeIcons.home),
                   // ignore: deprecated_member_use
                   title: SizedBox.shrink(),
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.chat_bubble_outlined),
+                  icon: Icon(FontAwesomeIcons.solidComments),
                   // ignore: deprecated_member_use
                   title: SizedBox.shrink(),
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.camera_alt_rounded),
+                  icon: Icon(FontAwesomeIcons.plus),
                   // ignore: deprecated_member_use
                   title: SizedBox.shrink(),
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.add_box_rounded),
+                  icon: Icon(FontAwesomeIcons.search),
                   // ignore: deprecated_member_use
                   title: SizedBox.shrink(),
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.person_rounded),
+                  icon: Icon(FontAwesomeIcons.userAlt),
                   // ignore: deprecated_member_use
                   title: SizedBox.shrink(),
                 ),
