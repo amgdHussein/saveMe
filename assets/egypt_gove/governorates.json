@@ -1,0 +1,140 @@
+{
+    "name": "governorates",
+    "data": [
+        {
+            "id": "1",
+            "governorate_ar": "القاهرة",
+            "governorate_en": "Cairo"
+        },
+        {
+            "id": "2",
+            "governorate_ar": "الجيزة",
+            "governorate_en": "Giza"
+        },
+        {
+            "id": "3",
+            "governorate_ar": "الأسكندرية",
+            "governorate_en": "Alexandria"
+        },
+        {
+            "id": "4",
+            "governorate_ar": "الدقهلية",
+            "governorate_en": "Dakahlia"
+        },
+        {
+            "id": "5",
+            "governorate_ar": "البحر الأحمر",
+            "governorate_en": "Red Sea"
+        },
+        {
+            "id": "6",
+            "governorate_ar": "البحيرة",
+            "governorate_en": "Beheira"
+        },
+        {
+            "id": "7",
+            "governorate_ar": "الفيوم",
+            "governorate_en": "Fayoum"
+        },
+        {
+            "id": "8",
+            "governorate_ar": "الغربية",
+            "governorate_en": "Gharbiya"
+        },
+        {
+            "id": "9",
+            "governorate_ar": "الإسماعلية",
+            "governorate_en": "Ismailia"
+        },
+        {
+            "id": "10",
+            "governorate_ar": "المنوفية",
+            "governorate_en": "Menofia"
+        },
+        {
+            "id": "11",
+            "governorate_ar": "المنيا",
+            "governorate_en": "Minya"
+        },
+        {
+            "id": "12",
+            "governorate_ar": "القليوبية",
+            "governorate_en": "Qaliubiya"
+        },
+        {
+            "id": "13",
+            "governorate_ar": "الوادي الجديد",
+            "governorate_en": "New Valley"
+        },
+        {
+            "id": "14",
+            "governorate_ar": "السويس",
+            "governorate_en": "Suez"
+        },
+        {
+            "id": "15",
+            "governorate_ar": "اسوان",
+            "governorate_en": "Aswan"
+        },
+        {
+            "id": "16",
+            "governorate_ar": "اسيوط",
+            "governorate_en": "Assiut"
+        },
+        {
+            "id": "17",
+            "governorate_ar": "بني سويف",
+            "governorate_en": "Beni Suef"
+        },
+        {
+            "id": "18",
+            "governorate_ar": "بورسعيد",
+            "governorate_en": "Port Said"
+        },
+        {
+            "id": "19",
+            "governorate_ar": "دمياط",
+            "governorate_en": "Damietta"
+        },
+        {
+            "id": "20",
+            "governorate_ar": "الشرقية",
+            "governorate_en": "Sharkia"
+        },
+        {
+            "id": "21",
+            "governorate_ar": "جنوب سيناء",
+            "governorate_en": "South Sinai"
+        },
+        {
+            "id": "22",
+            "governorate_ar": "كفر الشيخ",
+            "governorate_en": "Kafr Al sheikh"
+        },
+        {
+            "id": "23",
+            "governorate_ar": "مطروح",
+            "governorate_en": "Matrouh"
+        },
+        {
+            "id": "24",
+            "governorate_ar": "الأقصر",
+            "governorate_en": "Luxor"
+        },
+        {
+            "id": "25",
+            "governorate_ar": "قنا",
+            "governorate_en": "Qena"
+        },
+        {
+            "id": "26",
+            "governorate_ar": "شمال سيناء",
+            "governorate_en": "North Sinai"
+        },
+        {
+            "id": "27",
+            "governorate_ar": "سوهاج",
+            "governorate_en": "Sohag"
+        }
+    ]
+}
