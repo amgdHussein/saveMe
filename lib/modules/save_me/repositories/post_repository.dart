@@ -1,13 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/post.dart';
+import 'face_recognition_repository.dart';
 
 class PostRepository {
-  final _firestoreInstance = FirebaseFirestore.instance;
-  // final User _user = FirebaseAuth.instance.currentUser;
-
-  // Future<DocumentSnapshot> getPostOwner() async {
-  //   DocumentSnapshot documentSnapshot = await readUserPost();
-  // }
+  final FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
+  final FaceRecognitionRepository _faceRecognitionRepository =
+      FaceRecognitionRepository();
 
   Future<dynamic> post(String pid) async {
     DocumentSnapshot<Map<String, dynamic>> doc =
@@ -17,22 +15,39 @@ class PostRepository {
     return Finding.fromMap(data);
   }
 
-  Future<void> addPost(dynamic post) async {
-    DocumentReference<Map<String, dynamic>> _ref =
-        _firestoreInstance.collection('posts').doc();
-    Map<String, dynamic> data = post.toMap();
-    data['pid'] = _ref.id;
-    await _ref.set(data);
-  }
-
   Stream<QuerySnapshot<Map<String, dynamic>>> get posts {
     return _firestoreInstance.collection('posts').snapshots();
   }
 
+  Future<void> addPost(dynamic post) async {
+    DocumentReference<Map<String, dynamic>> _ref =
+        _firestoreInstance.collection('posts').doc();
+
+    // add image -> face recognition repository
+    Map<String, dynamic> data = post.toMap();
+    data['pid'] = _ref.id;
+    data = await updateImage(map: data);
+
+    await _ref.set(data);
+  }
+
+  Future<Map<String, dynamic>> updateImage({Map<String, dynamic> map}) async {
+    String link = await _faceRecognitionRepository.addImage(
+      pid: map['pid'],
+      imagePath: map['image'],
+    );
+    map['image'] = link;
+
+    return map;
+  }
+
   Future<void> updatePost(dynamic post) async {
+    Map<String, dynamic> data = await updateImage(map: post.toMap());
     await _firestoreInstance.collection('posts').doc(post.pid).set(
-          post.toMap(),
+          data,
           SetOptions(merge: true),
         );
   }
+
+  // deletePost
 }
