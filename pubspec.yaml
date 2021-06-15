@@ -28,6 +28,7 @@ dependencies:
   cloud_firestore: ^2.0.0
   cupertino_icons: ^1.0.2
   data_connection_checker: ^0.3.4
+  dio: ^4.0.0
   dropdown_search: ^0.6.1
   equatable: ^2.0.0
   firebase_auth: ^1.4.1
@@ -38,9 +39,8 @@ dependencies:
   flutter_phoenix: ^1.0.0
   font_awesome_flutter: ^9.1.0
   image_picker: ^0.7.4
-  smooth_page_indicator: ^0.2.3
   intl: ^0.17.0
-
+  smooth_page_indicator: ^0.2.3
 
 dev_dependencies:
   flutter_test:
