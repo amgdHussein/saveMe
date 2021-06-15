@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:save_me/modules/save_me/models/firestore_user.dart';
-import 'package:save_me/modules/save_me/repositories/user_repository.dart';
-import 'package:save_me/widgets/post/post_bottom_sheet_info.dart';
+import '../../modules/save_me/models/firestore_user.dart';
+import '../../modules/save_me/repositories/user_repository.dart';
+import 'post_bottom_sheet_info.dart';
 
 Widget post({@required dynamic post, @required BuildContext context}) {
   return FutureBuilder(

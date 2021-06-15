@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:save_me/modules/save_me/models/post.dart';
+import '../../modules/save_me/models/post.dart';
 
 void displayPostInfo({
   @required BuildContext context,

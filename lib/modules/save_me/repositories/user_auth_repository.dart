@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:save_me/modules/save_me/repositories/user_repository.dart';
+import 'user_repository.dart';
 import '../../../constants/assest_path.dart';
 
 class UserAuthRepository {
