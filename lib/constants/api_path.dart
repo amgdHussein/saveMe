@@ -1,1 +1,1 @@
-const String faceRecognitionUrl = "http://192.168.1.6:8080";
+const String faceRecognitionUrl = "http://192.168.1.8:8080";
