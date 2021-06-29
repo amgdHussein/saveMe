@@ -12,37 +12,77 @@ void displayPostInfo({
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10.0),
     ),
-    isDismissible: false,
     isScrollControlled: true,
-    // backgroundColor: Theme.of(context).primaryColor,
     builder: (builder) {
       return SizedBox(
         height: 450,
         child: Stack(
           children: [
             Positioned(
-              top: 15,
-              left: 15,
-              height: 50,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  'Close',
-                  style: Theme.of(context).textTheme.button,
+              left: 0,
+              right: 0,
+              height: 55,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).canvasColor,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(10.0),
+                    topLeft: Radius.circular(10.0),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey,
+                      offset: Offset(0.0, 1.0),
+                      blurRadius: 6.0,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 4,
+                      margin: EdgeInsets.only(top: 10, bottom: 5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(2),
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Description",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Row(
+                          children: [
+                            // Icon(
+                            //   Icons.reply,
+                            // ),
+                            // Icon(
+                            //   Icons.edit,
+                            // ),
+                            GestureDetector(
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.redAccent,
+                              ),
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
             Positioned(
-              top: 51,
-              left: 0,
-              right: 0,
-              height: 1,
-              child: Divider(height: 0),
-            ),
-            Positioned(
-              top: 51,
+              top: 55,
               left: 0,
               right: 0,
               bottom: 0,
