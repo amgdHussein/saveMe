@@ -36,4 +36,12 @@ class FaceRecognitionRepository {
     if (response.data.containsKey('error')) return response.data['error'];
     return response.data['pids'];
   }
+
+  Future<dynamic> isValidImage({@required File imageFile}) async {
+    Response response =
+        await _faceRecogInstance.isValidImage(imagePath: imageFile.path);
+
+    if (response.data.containsKey('error')) return response.data['error'];
+    return response.data['valid'];
+  }
 }
