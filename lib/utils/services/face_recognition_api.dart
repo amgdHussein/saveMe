@@ -22,7 +22,7 @@ class FaceRecognitionDio {
     return dio;
   }
 
-  // add, update image
+  // add, update imagec
   Future<Response> uploadImage(
       {@required String pid, @required String imagePath}) async {
     Dio dio = this.dio;
@@ -41,6 +41,7 @@ class FaceRecognitionDio {
     return response;
   }
 
+  // delete image
   Future<Response> deleteImage({@required String pid}) async {
     Dio dio = this.dio;
     var response = await dio.delete("/api/database/delete/image/$pid");
@@ -57,6 +58,22 @@ class FaceRecognitionDio {
 
     Response response = await dio.post(
       "/api/recognize/image/",
+      data: formData,
+    );
+
+    return response;
+  }
+
+  // validate an image
+  Future<Response> isValidImage({@required String imagePath}) async {
+    Dio dio = this.dio;
+
+    FormData formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(imagePath),
+    });
+
+    Response response = await dio.post(
+      "/api/recognize/is_valid/image/",
       data: formData,
     );
 
