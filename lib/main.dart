@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:save_me/modules/save_me/screens/report/bloc/report_bloc.dart';
 import 'core/auth/email_verification.dart';
 import 'modules/save_me/screens/profile/cubit/profile_cubit.dart';
 import 'core/on_boarding/on_boarding.dart';
@@ -39,36 +40,31 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => ProfileCubit()),
-      ],
-      child: MaterialApp(
-        title: 'saveMe',
-        debugShowCheckedModeBanner: false,
-        // onGenerateRoute: _router.generateRoute,
-        themeMode: ThemeMode.dark,
-        darkTheme: appTheme,
-        home: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            if (state is AuthFailure)
-              return OnboardingScreen(
-                userRepository: _userRepository,
-              );
-
-            if (state is AuthSucess) {
-              if (FirebaseAuth.instance.currentUser != null &&
-                  !FirebaseAuth.instance.currentUser.emailVerified) {
-                return EmailVerificationScreen();
-              }
-              return AppLayout();
-            }
-
-            return Scaffold(
-              body: Center(child: CircularProgressIndicator()),
+    return MaterialApp(
+      title: 'saveMe',
+      debugShowCheckedModeBanner: false,
+      // onGenerateRoute: _router.generateRoute,
+      themeMode: ThemeMode.dark,
+      darkTheme: appTheme,
+      home: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          if (state is AuthFailure)
+            return OnboardingScreen(
+              userRepository: _userRepository,
             );
-          },
-        ),
+
+          if (state is AuthSucess) {
+            if (FirebaseAuth.instance.currentUser != null &&
+                !FirebaseAuth.instance.currentUser.emailVerified) {
+              return EmailVerificationScreen();
+            }
+            return AppLayout();
+          }
+
+          return Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        },
       ),
     );
   }
