@@ -48,4 +48,13 @@ class Validators {
     else
       return null;
   }
+
+  static String isValidName(String name) {
+    if (name.isEmpty)
+      return 'Person name is required.';
+    else if (!_nameRegExp.hasMatch(name))
+      return 'Invalid name.';
+    else
+      return null;
+  }
 }
