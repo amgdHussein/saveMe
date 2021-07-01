@@ -59,12 +59,16 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
       yield* _mapReportMissingDateChangeToState(event.date);
     else if (event is ReportImageChange)
       yield* _mapReportImageChangeToState(event.image);
+    else if (event is ReportPickerChange)
+      yield* _mapReportPickerChangeToState(event.picker);
     else if (event is ReportDescriptionChange)
       yield* _mapReportDescriptionChangeToState(event.description);
-    else if (event is ReportGovernorateChange) {
+    else if (event is ReportGovernorateChange)
       yield* _mapReportGovernorateChangeToState(event.governorate);
-    } else if (event is ReportCityChange)
+    else if (event is ReportCityChange)
       yield* _mapReportCityChangeToState(event.city);
+    else if (event is ReportError)
+      yield* _mapReportErrorToState(event.error);
     else if (event is ReportSubmitted)
       yield* _mapReportSubmittedToState(
         name: event.name,
@@ -91,6 +95,10 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     yield state.update(name: name);
   }
 
+  Stream<ReportState> _mapReportErrorToState(String error) async* {
+    yield state.update(error: error);
+  }
+
   Stream<ReportState> _mapReportAgeChangeToState(int age) async* {
     yield state.update(age: age);
   }
@@ -103,16 +111,19 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     yield state.update(date: date);
   }
 
+  Stream<ReportState> _mapReportPickerChangeToState(String picker) async* {
+    yield state.update(picker: picker);
+  }
+
   Stream<ReportState> _mapReportImageChangeToState(String image) async* {
-    yield ReportStateLoading();
+    yield ReportStateLoading.fromReportState(state);
     dynamic response = await _faceRecognitionRepository.isValidImage(
       imageFile: File(image),
     );
     if (response == true)
       yield state.update(image: image);
     else {
-      yield ReportStateFailure(error: response);
-      yield state.update(image: null);
+      yield state.update(error: response);
     }
   }
 
@@ -141,15 +152,13 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
     @required String governorate,
     @required String city,
   }) async* {
-    yield ReportStateLoading();
-
+    yield ReportStateLoading.fromReportState(state);
     try {
       // append post
 
       yield ReportStateSuccess();
     } catch (error) {
-      yield ReportStateFailure(error: 'kj');
-      print(error.toString());
+      yield state.update(error: error.toString());
     }
   }
 }

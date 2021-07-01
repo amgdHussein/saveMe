@@ -41,7 +41,7 @@ class FaceRecognitionRepository {
     Response response =
         await _faceRecogInstance.isValidImage(imagePath: imageFile.path);
 
-    if (response.data.containsKey('error')) return response.data['error'];
+    if (response.data.containsKey('error')) return response.data['message'];
     return response.data['valid'];
   }
 }

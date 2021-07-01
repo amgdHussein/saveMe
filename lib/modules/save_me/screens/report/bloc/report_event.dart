@@ -12,9 +12,6 @@ class ReportGenderChange extends ReportEvent {
   ReportGenderChange({this.gender});
 
   @override
-  List<Object> get props => [gender];
-
-  @override
   String toString() => 'ReportGenderChange(gender: $gender)';
 }
 
@@ -22,9 +19,6 @@ class ReportNameChange extends ReportEvent {
   final String name;
 
   ReportNameChange({this.name});
-
-  @override
-  List<Object> get props => [name];
 
   @override
   String toString() => 'ReportNameChange(name: $name)';
@@ -36,9 +30,6 @@ class ReportTypeChange extends ReportEvent {
   ReportTypeChange({this.type});
 
   @override
-  List<Object> get props => [type];
-
-  @override
   String toString() => 'ReportTypeChange(type: $type)';
 }
 
@@ -46,9 +37,6 @@ class ReportDescriptionChange extends ReportEvent {
   final String description;
 
   ReportDescriptionChange({this.description});
-
-  @override
-  List<Object> get props => [description];
 
   @override
   String toString() => 'ReportDescriptionChange(description: $description)';
@@ -60,9 +48,6 @@ class ReportAgeChange extends ReportEvent {
   ReportAgeChange({this.age});
 
   @override
-  List<Object> get props => [age];
-
-  @override
   String toString() => 'ReportAgeChange(age: $age)';
 }
 
@@ -70,9 +55,6 @@ class ReportDateChange extends ReportEvent {
   final DateTime date;
 
   ReportDateChange({this.date});
-
-  @override
-  List<Object> get props => [date];
 
   @override
   String toString() => 'ReportDateChange(date: $date)';
@@ -84,9 +66,6 @@ class ReportImageChange extends ReportEvent {
   ReportImageChange({this.image});
 
   @override
-  List<Object> get props => [image];
-
-  @override
   String toString() => 'ReportImageChange(image: $image)';
 }
 
@@ -94,9 +73,6 @@ class ReportGovernorateChange extends ReportEvent {
   final String governorate;
 
   ReportGovernorateChange({this.governorate});
-
-  @override
-  List<Object> get props => [governorate];
 
   @override
   String toString() => 'ReportGovernorateChange(governorate: $governorate)';
@@ -114,16 +90,31 @@ class ReportCityChange extends ReportEvent {
   String toString() => 'ReportCityChange(city: $city)';
 }
 
+class ReportPickerChange extends ReportEvent {
+  final String picker;
+
+  ReportPickerChange({this.picker});
+
+  @override
+  String toString() => 'ReportCityChange(picker: $picker)';
+}
+
 class ReportPageChange extends ReportEvent {
   final int page;
 
   ReportPageChange({this.page});
 
   @override
-  List<Object> get props => [page];
+  String toString() => 'ReportCityChange(page: $page)';
+}
+
+class ReportError extends ReportEvent {
+  final String error;
+
+  ReportError({this.error});
 
   @override
-  String toString() => 'ReportCityChange(page: $page)';
+  String toString() => 'ReportError(error: $error)';
 }
 
 class ReportSubmitted extends ReportEvent {

@@ -66,7 +66,7 @@ class ProfileCubit extends Cubit<ProfileState> {
                 leading: Icon(Icons.photo_library),
                 title: Text('Photo Library'),
                 onTap: () async {
-                  _image = await imgFromGallery();
+                  _image = File(await imgFromGallery());
                   if (_image != null) uploadPhoto(imageFile: _image);
                   Navigator.of(context).pop();
                 },
@@ -75,7 +75,7 @@ class ProfileCubit extends Cubit<ProfileState> {
                 leading: Icon(Icons.photo_camera),
                 title: Text('Camera'),
                 onTap: () async {
-                  _image = await imgFromCamera();
+                  _image = File(await imgFromCamera());
                   if (_image != null) uploadPhoto(imageFile: _image);
                   Navigator.of(context).pop();
                 },

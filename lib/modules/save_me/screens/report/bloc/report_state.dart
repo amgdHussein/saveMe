@@ -11,6 +11,10 @@ class ReportState {
   final String description;
   final String governorate;
   final String city;
+  final String picker;
+  final String error;
+
+  bool get isFailure => error != null;
 
   bool get isPopulated =>
       type != null &&
@@ -30,20 +34,24 @@ class ReportState {
     @required this.description,
     @required this.governorate,
     @required this.city,
+    @required this.picker,
+    @required this.error,
   });
 
   factory ReportState.initial() {
     return ReportState(
       page: 0,
       name: null,
-      type: null,
-      age: null,
-      gender: null,
+      type: 'finding',
+      age: 5,
+      gender: 'male',
       date: null,
       image: null,
       description: null,
       governorate: null,
       city: null,
+      picker: null,
+      error: null,
     );
   }
 
@@ -58,6 +66,8 @@ class ReportState {
     String description,
     String governorate,
     String city,
+    String error,
+    String picker,
   }) {
     return copyWith(
       page: page,
@@ -70,6 +80,8 @@ class ReportState {
       description: description,
       governorate: governorate,
       city: city,
+      picker: picker,
+      error: error,
     );
   }
 
@@ -84,6 +96,8 @@ class ReportState {
     String description,
     String governorate,
     String city,
+    String picker,
+    String error,
   }) {
     return ReportState(
       page: page ?? this.page,
@@ -96,20 +110,62 @@ class ReportState {
       description: description ?? this.description,
       governorate: governorate ?? this.governorate,
       city: city ?? this.city,
+      picker: picker ?? this.picker,
+      error: error,
     );
   }
 
   @override
   String toString() {
-    return 'ReportState(page: $page, name: $name, type: $type, age: $age, gender: $gender, date: $date, image: $image, description: $description, governorate: $governorate, city: $city)';
+    return 'ReportState(page: $page, name: $name, type: $type, age: $age, gender: $gender, date: $date, picker: $picker, image: $image, description: $description, governorate: $governorate, city: $city error: $error)';
   }
 }
 
 class ReportStateSuccess extends ReportState {}
 
-class ReportStateLoading extends ReportState {}
-
-class ReportStateFailure extends ReportState {
+class ReportStateLoading extends ReportState {
+  final int page;
+  final String name;
+  final String type;
+  final int age;
+  final String gender;
+  final DateTime date;
+  final String image;
+  final String description;
+  final String governorate;
+  final String city;
+  final String picker;
   final String error;
-  ReportStateFailure({@required this.error});
+
+  ReportStateLoading({
+    @required this.page,
+    @required this.name,
+    @required this.type,
+    @required this.age,
+    @required this.gender,
+    @required this.date,
+    @required this.image,
+    @required this.description,
+    @required this.governorate,
+    @required this.city,
+    @required this.picker,
+    @required this.error,
+  });
+
+  factory ReportStateLoading.fromReportState(ReportState state) {
+    return ReportStateLoading(
+      page: state.page,
+      name: state.name,
+      type: state.type,
+      age: state.age,
+      gender: state.gender,
+      date: state.date,
+      image: state.image,
+      description: state.description,
+      governorate: state.governorate,
+      city: state.city,
+      picker: state.picker,
+      error: state.error,
+    );
+  }
 }

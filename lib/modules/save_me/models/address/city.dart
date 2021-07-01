@@ -15,12 +15,15 @@ class City {
     @required this.cityNameEnglish,
   });
 
+  @override
+  String toString() => cityNameEnglish;
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'governorate_id': governorateId,
-      'city_name_ar': cityNameArabic,
-      'city_name_en': cityNameEnglish,
+      'city_ar': cityNameArabic,
+      'city_en': cityNameEnglish,
     };
   }
 
@@ -28,8 +31,8 @@ class City {
     return City(
       id: map['id'],
       governorateId: map['governorate_id'],
-      cityNameArabic: map['city_name_ar'],
-      cityNameEnglish: map['city_name_en'],
+      cityNameArabic: map['city_ar'],
+      cityNameEnglish: map['city_en'],
     );
   }
 

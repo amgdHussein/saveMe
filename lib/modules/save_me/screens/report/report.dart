@@ -1,9 +1,18 @@
+import 'dart:io';
+
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_conditional_rendering/conditional.dart';
+import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
+import 'package:flutter_material_pickers/helpers/show_scroll_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:save_me/config/themes/colors.dart';
 import 'package:save_me/constants/app_constants.dart';
+import 'package:save_me/modules/save_me/models/address/governorate.dart';
 import 'package:save_me/modules/save_me/screens/report/bloc/report_bloc.dart';
+import 'package:save_me/utils/helpers/image_pickers.dart';
+import 'package:save_me/utils/mixins/validation_mixins.dart';
 import 'package:save_me/widgets/snack_bars/failure.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -30,6 +39,7 @@ class _ReportScreenState extends State<ReportScreen> {
   final TextEditingController _genderController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _imageController = TextEditingController();
+  final TextEditingController _pickerController = TextEditingController();
   final TextEditingController _governorateController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
 
@@ -49,198 +59,437 @@ class _ReportScreenState extends State<ReportScreen> {
     _dateController.addListener(_onDateChange);
     _governorateController.addListener(_onGovernorateChange);
     _cityController.addListener(_onCityChange);
+    _pickerController.addListener(_onPickerChange);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ReportBloc, ReportState>(
-      listener: (context, state) {
-        if (state is ReportStateLoading)
-          return Center(
-            child: SizedBox(
-              height: 300,
-              width: 300,
-              child: CircularProgressIndicator(),
-            ),
-          );
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height - 60,
+          width: MediaQuery.of(context).size.width,
+          child: BlocConsumer<ReportBloc, ReportState>(
+            listener: (context, state) {
+              if (state.isFailure) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  FailureSnackBar(error: state.error),
+                );
+                _reportBloc.add(ReportError(error: null));
+              }
+              // if (state.isSubmitting)
+              //   ScaffoldMessenger.of(context)
+              //       .showSnackBar(signInSubmittingSnackBar(
+              //     context: context,
+              //   ));
 
-        if (state is ReportStateFailure) FailureSnackBar(error: state.error);
-      },
-      builder: (context, state) {
-        return Scaffold(
-          body: Stack(
-            children: [
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                height: 400,
-                child: Container(
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-              Positioned(
-                top: 60,
-                right: 20,
-                left: 20,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // if (state.isSuccess) {
+              //   BlocProvider.of<AuthBloc>(context).add(AuthSignedIn());
+              //   Phoenix.rebirth(context);
+              // }
+            },
+            builder: (context, state) {
+              List<Widget> forms = [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    SmoothPageIndicator(
-                      controller: _boarderController,
-                      count: FORM_HEADERS.length,
-                      effect: ExpandingDotsEffect(
-                        dotColor: GRAY_CHATEAU,
-                        activeDotColor: Theme.of(context).canvasColor,
-                        dotHeight: 10,
-                        dotWidth: 10,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        if (state.page > 0)
-                          pageMoveButton(
-                            onPressed: () {
-                              _boarderController.previousPage(
-                                duration: Duration(milliseconds: 750),
-                                curve: Curves.fastLinearToSlowEaseIn,
-                              );
-                            },
-                            icon: Icons.arrow_back,
-                          ),
-                        SizedBox(width: 10),
-                        pageMoveButton(
-                          onPressed: () {
-                            if (!_formKeys[state.page].currentState.validate())
-                              _boarderController.nextPage(
-                                duration: Duration(milliseconds: 750),
-                                curve: Curves.fastLinearToSlowEaseIn,
-                              );
-                            else
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                FailureSnackBar(error: 'No category selected!'),
-                              );
-                          },
-                          icon: Icons.arrow_forward,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                top: 100,
-                left: 20,
-                right: 20,
-                bottom: 50,
-                child: PageView.builder(
-                  controller: _boarderController,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (BuildContext context, int index) {
+                    ['finding'],
+                    ['missing'],
+                  ].map((items) {
                     return Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          FORM_HEADERS[index],
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w900,
-                            color: Theme.of(context).canvasColor,
-                          ),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          // height: MediaQuery.of(context).size.height - 250,
-                          child: Card(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 10.0),
-                              child: Form(
-                                key: _formKeys[index],
-                                // ignore: deprecated_member_use
-                                autovalidate: true,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: <dynamic>[
-                                    [
-                                      'finding',
-                                      Colors.green,
-                                      FontAwesomeIcons.solidSmile,
-                                    ],
-                                    [
-                                      'missing',
-                                      Colors.redAccent,
-                                      FontAwesomeIcons.solidFrown,
-                                    ],
-                                  ]
-                                      .map(
-                                        (items) => GestureDetector(
-                                          onTap: () {
-                                            _typeController.text = items[0];
-                                          },
-                                          child: Container(
-                                            height: 100,
-                                            width: 100,
-                                            margin: const EdgeInsets.all(15.0),
-                                            padding: const EdgeInsets.all(5.0),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
-                                              color: state.type == items[0]
-                                                  ? items[1]
-                                                  : null,
-                                              border: Border.all(
-                                                color: items[1],
-                                              ),
-                                            ),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Icon(
-                                                  FontAwesomeIcons.solidFrown,
-                                                  size: 50,
-                                                  color: state.type == items[0]
-                                                      ? Colors.white
-                                                      : items[1]
-                                                          .withOpacity(0.3),
-                                                ),
-                                                Text(
-                                                  items[0].toUpperCase(),
-                                                  style: TextStyle(
-                                                    color:
-                                                        state.type == items[0]
-                                                            ? Colors.white
-                                                            : items[1],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
+                        CircleAvatar(radius: 50),
+                        SizedBox(height: 30),
+                        GestureDetector(
+                          onTap: () {
+                            _typeController.text = items[0];
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              color: state.type == items[0]
+                                  ? Theme.of(context).primaryColor
+                                  : null,
+                            ),
+                            child: Text(
+                              items[0].toUpperCase(),
+                              style: TextStyle(
+                                color: state.type == items[0]
+                                    ? Theme.of(context).canvasColor
+                                    : Theme.of(context).primaryColor,
                               ),
                             ),
                           ),
                         ),
                       ],
                     );
-                  },
-                  itemCount: FORM_HEADERS.length,
-                  onPageChanged: (int page) {
-                    _pageController.text = page.toString();
+                  }).toList(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _nameController,
+                        keyboardType: TextInputType.name,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                          labelText: "${capitalize(state.type)} Name",
+                          suffixIcon: Icon(
+                            Icons.person,
+                            color: _nameController.text.isNotEmpty
+                                ? Theme.of(context).primaryColor
+                                : null,
+                          ),
+                        ),
+                        validator: state.type == "missing"
+                            ? Validators.isValidName
+                            : null,
+                      ),
+                      SizedBox(height: 10),
+                      customField(
+                        title: "Gender",
+                        input: state.gender,
+                        suffixWidget: Row(
+                          children: [
+                            ['male', FontAwesomeIcons.mars],
+                            ['female', FontAwesomeIcons.venus]
+                          ].map((items) {
+                            return IconButton(
+                              icon: Icon(
+                                items[1],
+                                color: state.gender == items[0]
+                                    ? Theme.of(context).primaryColor
+                                    : null,
+                              ),
+                              onPressed: () {
+                                _genderController.text = items[0];
+                              },
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      customField(
+                        title: "Age",
+                        input: state.age.toString(),
+                        suffixWidget: IconButton(
+                          icon: Icon(
+                            Icons.panorama_horizontal_select,
+                            color: state.age != null
+                                ? Theme.of(context).primaryColor
+                                : null,
+                          ),
+                          onPressed: () {
+                            showMaterialNumberPicker(
+                              context: context,
+                              title: 'Pick The ${capitalize(state.type)} Age',
+                              minNumber: 3,
+                              maxNumber: 60,
+                              step: 1,
+                              confirmText: 'select'.toUpperCase(),
+                              selectedNumber: state.age,
+                              onChanged: (int value) {
+                                _ageController.text = value.toString();
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.grey[700],
+                              width: 1,
+                            ),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "${capitalize(state.type)} Photo",
+                                    style: TextStyle(
+                                      color: Colors.grey[700],
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      ['camera', Icons.camera_alt],
+                                      ['gallery', Icons.image]
+                                    ].map((items) {
+                                      return Conditional.single(
+                                        context: context,
+                                        conditionBuilder: (context) =>
+                                            state is ReportStateLoading &&
+                                            state.picker == items[0],
+                                        widgetBuilder: (context) => Container(
+                                          height: 20,
+                                          width: 20,
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 14),
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                        fallbackBuilder: (context) =>
+                                            IconButton(
+                                          icon: Icon(
+                                            items[1],
+                                            color: state.picker == items[0]
+                                                ? Theme.of(context).primaryColor
+                                                : null,
+                                          ),
+                                          onPressed: () async {
+                                            _pickerController.text = items[0];
+                                            _imageController.text =
+                                                items[0] == 'camera'
+                                                    ? await imgFromCamera()
+                                                    : await imgFromGallery();
+                                          },
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ],
+                              ),
+                              if (state.image != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    right: 10,
+                                    bottom: 10,
+                                  ),
+                                  child: Image.file(
+                                    File(state.image),
+                                    fit: BoxFit.fitHeight,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                FutureBuilder<List<Governorate>>(
+                  future: _reportBloc.governorates(context),
+                  builder: (context, snapshot) {
+                    //   _governorateController.text = snapshot
+                    //       .data[int.parse(_governorateId) - 1]
+                    //       .governorateNameEnglish;
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return Text('Loading....');
+                      default:
+                        if (snapshot.hasError)
+                          return Text('Error: ${snapshot.error}');
+                        else {
+                          return Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              children: [
+                                customField(
+                                  title: "Governorate",
+                                  input: state.governorate == null
+                                      ? snapshot.data[0].governorateNameEnglish
+                                      : state.governorate,
+                                  suffixWidget: IconButton(
+                                    icon: Icon(
+                                      Icons.pin_drop,
+                                      color: state.governorate != null
+                                          ? Theme.of(context).primaryColor
+                                          : null,
+                                    ),
+                                    onPressed: () {
+                                      showMaterialScrollPicker<Governorate>(
+                                        context: context,
+                                        title: 'Pick Your Governorate',
+                                        items: snapshot.data,
+                                        selectedItem: snapshot.data[0],
+                                        onChanged: (value) {
+                                          _governorateController.text =
+                                              value.governorateNameEnglish;
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                                if (_typeController.text == "missing")
+                                  SizedBox(
+                                    height: 52,
+                                    child: DateTimeField(
+                                      format: DEFAULT_DATE_FORMAT,
+                                      controller: _dateController,
+                                      decoration: InputDecoration(
+                                        labelText: "When it happend?",
+                                        suffixIcon: Icon(
+                                          Icons.calendar_today,
+                                          color: _dateController.text.isNotEmpty
+                                              ? Theme.of(context).primaryColor
+                                              : null,
+                                        ),
+                                      ),
+                                      onShowPicker: (context, currentValue) {
+                                        return showDatePicker(
+                                          context: context,
+                                          firstDate: DateTime(1990),
+                                          initialDate:
+                                              currentValue ?? DateTime.now(),
+                                          lastDate: DateTime.now(),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                if (_typeController.text == "missing")
+                                  SizedBox(height: 10),
+                              ],
+                            ),
+                          );
+                        }
+                    }
                   },
                 ),
-              ),
-            ],
+              ];
+              return Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 400,
+                    child: Container(
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  Positioned(
+                    top: 80,
+                    left: 50,
+                    right: 50,
+                    child: CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Colors.white,
+                    ),
+                  ),
+                  Positioned(
+                    top: 230,
+                    left: 20,
+                    right: 20,
+                    child: Text(
+                      FORM_HEADERS[state.page],
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2
+                          .copyWith(color: Colors.white),
+                    ),
+                  ),
+                  Positioned(
+                    top: 270,
+                    left: 20,
+                    right: 20,
+                    child: Text(
+                      FORM_SUBTITILES[state.page],
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 320,
+                    left: 20,
+                    right: 20,
+                    bottom: 80,
+                    child: PageView.builder(
+                      controller: _boarderController,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+                        return Card(
+                          child: Center(
+                            child: Form(
+                              key: _formKeys[index],
+                              autovalidateMode: AutovalidateMode.always,
+                              child: SingleChildScrollView(
+                                physics: BouncingScrollPhysics(),
+                                child: forms[index],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      itemCount: FORM_HEADERS.length,
+                      onPageChanged: (int page) {
+                        _pageController.text = page.toString();
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 30,
+                    right: 20,
+                    left: 20,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SmoothPageIndicator(
+                          controller: _boarderController,
+                          count: FORM_HEADERS.length,
+                          effect: ExpandingDotsEffect(
+                            dotColor: GRAY_CHATEAU,
+                            activeDotColor: Theme.of(context).primaryColor,
+                            dotHeight: 10,
+                            dotWidth: 10,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            if (state.page > 0)
+                              pageMoveButton(
+                                onPressed: () => moveBackward(),
+                                icon: Icons.arrow_back,
+                              ),
+                            SizedBox(width: 10),
+                            pageMoveButton(
+                              onPressed: () async {
+                                if (state.page == 1 &&
+                                    _formKeys[state.page]
+                                        .currentState
+                                        .validate() &&
+                                    state.image.isNotEmpty)
+                                  moveForward();
+                                else if (_formKeys[state.page]
+                                    .currentState
+                                    .validate())
+                                  moveForward();
+                                else if (state.page ==
+                                    FORM_HEADERS.length - 1) {
+                                  print('---------------------');
+                                } // submite
+                              },
+                              icon: state.page == FORM_HEADERS.length - 1
+                                  ? Icons.done
+                                  : Icons.arrow_forward,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -257,11 +506,13 @@ class _ReportScreenState extends State<ReportScreen> {
     _governorateController.dispose();
     _cityController.dispose();
     _pageController.dispose();
+    _pickerController.dispose();
     super.dispose();
   }
 
-  void _onNameChange() =>
-      _reportBloc.add(ReportNameChange(name: _nameController.text));
+  void _onNameChange() => _reportBloc.add(
+        ReportNameChange(name: _nameController.text),
+      );
 
   void _onDescriptionChange() => _reportBloc.add(
         ReportDescriptionChange(
@@ -273,26 +524,37 @@ class _ReportScreenState extends State<ReportScreen> {
         ReportPageChange(page: int.parse(_pageController.text)),
       );
 
-  void _onTypeChange() =>
-      _reportBloc.add(ReportTypeChange(type: _typeController.text));
+  void _onTypeChange() => _reportBloc.add(
+        ReportTypeChange(type: _typeController.text),
+      );
 
-  void _onGenderChange() =>
-      _reportBloc.add(ReportGenderChange(gender: _genderController.text));
+  void _onGenderChange() => _reportBloc.add(
+        ReportGenderChange(gender: _genderController.text),
+      );
 
-  void _onAgeChange() =>
-      _reportBloc.add(ReportAgeChange(age: int.parse(_ageController.text)));
+  void _onAgeChange() => _reportBloc.add(
+        ReportAgeChange(age: int.parse(_ageController.text)),
+      );
 
-  void _onDateChange() => _reportBloc
-      .add(ReportDateChange(date: DateTime.parse(_dateController.text)));
+  void _onDateChange() => _reportBloc.add(
+        ReportDateChange(date: DateTime.parse(_dateController.text)),
+      );
 
-  void _onImageChange() =>
-      _reportBloc.add(ReportImageChange(image: _imageController.text));
+  void _onImageChange() => _reportBloc.add(
+        ReportImageChange(image: _imageController.text),
+      );
 
-  void _onGovernorateChange() => _reportBloc
-      .add(ReportGovernorateChange(governorate: _governorateController.text));
+  void _onGovernorateChange() => _reportBloc.add(
+        ReportGovernorateChange(governorate: _governorateController.text),
+      );
 
-  void _onCityChange() =>
-      _reportBloc.add(ReportCityChange(city: _cityController.text));
+  void _onCityChange() => _reportBloc.add(
+        ReportCityChange(city: _cityController.text),
+      );
+
+  void _onPickerChange() => _reportBloc.add(
+        ReportPickerChange(picker: _pickerController.text),
+      );
 
   void _onFormSubmitted() => _reportBloc.add(
         ReportSubmitted(
@@ -308,8 +570,12 @@ class _ReportScreenState extends State<ReportScreen> {
         ),
       );
 
-  Widget pageMoveButton(
-          {@required Function onPressed, @required IconData icon}) =>
+  String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+
+  Widget pageMoveButton({
+    @required Function onPressed,
+    @required IconData icon,
+  }) =>
       SizedBox(
         height: 30,
         width: 30,
@@ -320,48 +586,72 @@ class _ReportScreenState extends State<ReportScreen> {
           ),
           child: Icon(
             icon,
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).canvasColor,
           ),
-          backgroundColor: Theme.of(context).canvasColor,
+          backgroundColor: Theme.of(context).primaryColor,
+        ),
+      );
+
+  void moveForward() {
+    _boarderController.nextPage(
+      duration: Duration(milliseconds: 750),
+      curve: Curves.fastLinearToSlowEaseIn,
+    );
+  }
+
+  void moveBackward() {
+    _boarderController.previousPage(
+      duration: Duration(milliseconds: 750),
+      curve: Curves.fastLinearToSlowEaseIn,
+    );
+  }
+
+  Widget customField({
+    @required String title,
+    @required String input,
+    @required Widget suffixWidget,
+  }) =>
+      Container(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: Colors.grey[700],
+              width: 1,
+            ),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontSize: 12,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 150,
+                    child: Text(
+                      capitalize(input),
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 16,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              suffixWidget
+            ],
+          ),
         ),
       );
 }
-
-// TextFormField(
-//   controller: _nameController,
-//   keyboardType: TextInputType.name,
-//   autocorrect: false,
-//   decoration: InputDecoration(
-//     border: OutlineInputBorder(
-//       borderRadius:
-//           BorderRadius.all(Radius.circular(10.0)),
-//     ),
-//     hintText: "Amgad Hussein Ahmed",
-//   ),
-//   validator: Validators.isValidUserName,
-// ),
-
-// SizedBox(
-//   height: 52,
-//   child: DateTimeField(
-//     format: DateFormat("MMM d, yyyy"),
-//     enabled: _typeController.text == "Missing",
-//     controller: _dateController,
-//     decoration: InputDecoration(
-//       border: OutlineInputBorder(
-//         borderRadius: BorderRadius.all(
-//             Radius.circular(10.0)),
-//       ),
-//       hintText: "May 2, 2020",
-//     ),
-//     onShowPicker: (context, currentValue) {
-//       return showDatePicker(
-//         context: context,
-//         firstDate: DateTime(1900),
-//         initialDate:
-//             currentValue ?? DateTime.now(),
-//         lastDate: DateTime(2100),
-//       );
-//     },
-//   ),
-// ),

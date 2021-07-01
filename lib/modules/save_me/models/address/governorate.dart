@@ -13,19 +13,22 @@ class Governorate {
     @required this.governorateNameEnglish,
   });
 
+  @override
+  String toString() => governorateNameEnglish;
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'governorate_name_ar': governorateNameArabic,
-      'governorate_name_en': governorateNameEnglish,
+      'governorate_ar': governorateNameArabic,
+      'governorate_en': governorateNameEnglish,
     };
   }
 
   factory Governorate.fromMap(Map<String, dynamic> map) {
     return Governorate(
       id: map['id'],
-      governorateNameArabic: map['governorate_name_ar'],
-      governorateNameEnglish: map['governorate_name_en'],
+      governorateNameArabic: map['governorate_ar'],
+      governorateNameEnglish: map['governorate_en'],
     );
   }
 

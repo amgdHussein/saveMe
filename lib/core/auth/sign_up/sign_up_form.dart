@@ -131,6 +131,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     ),
                     SizedBox(height: 15),
                     TextFormField(
+                      maxLength: 9,
                       controller: _phoneController,
                       keyboardType: TextInputType.phone,
                       autocorrect: false,
