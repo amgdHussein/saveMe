@@ -31,7 +31,7 @@ class FaceRecognitionDio {
     });
 
     Response response = await dio.post(
-      "/api/database/add/image/",
+      "/api/filesys/add/image/",
       data: formData,
       queryParameters: {
         "pid": pid,
@@ -44,7 +44,7 @@ class FaceRecognitionDio {
   // delete image
   Future<Response> deleteImage({@required String pid}) async {
     Dio dio = this.dio;
-    var response = await dio.delete("/api/database/delete/image/$pid");
+    var response = await dio.delete("/api/filesys/delete/image/$pid");
     return response;
   }
 

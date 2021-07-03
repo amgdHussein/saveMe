@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/post.dart';
 import 'face_recognition_repository.dart';
 
@@ -25,6 +26,7 @@ class PostRepository {
 
     // add image -> face recognition repository
     Map<String, dynamic> data = post.toMap();
+    data['uid'] = FirebaseAuth.instance.currentUser.uid;
     data['pid'] = _ref.id;
     data = await updateImage(map: data);
 

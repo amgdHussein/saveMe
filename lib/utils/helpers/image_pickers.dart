@@ -1,8 +1,6 @@
-// ignore: missing_return
-import 'dart:io';
-
 import 'package:image_picker/image_picker.dart';
 
+// ignore: missing_return
 Future<String> imgFromCamera() async {
   final _picker = ImagePicker();
   final pickedFile = await _picker.getImage(source: ImageSource.camera);

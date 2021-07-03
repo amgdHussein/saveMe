@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../save_me/screens/report/report.dart';
 import '../../save_me/screens/profile/profile.dart';
 import '../../save_me/screens/search.dart';
-import '../../save_me/screens/chat.dart';
+import '../../save_me/screens/chat/chat.dart';
 import '../../save_me/screens/home.dart';
 
 part 'layout_state.dart';

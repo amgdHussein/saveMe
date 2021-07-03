@@ -6,9 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
 import 'package:flutter_material_pickers/helpers/show_scroll_picker.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:save_me/config/themes/colors.dart';
 import 'package:save_me/constants/app_constants.dart';
+import 'package:save_me/modules/save_me/models/address/city.dart';
 import 'package:save_me/modules/save_me/models/address/governorate.dart';
 import 'package:save_me/modules/save_me/screens/report/bloc/report_bloc.dart';
 import 'package:save_me/utils/helpers/image_pickers.dart';
@@ -41,6 +43,7 @@ class _ReportScreenState extends State<ReportScreen> {
   final TextEditingController _imageController = TextEditingController();
   final TextEditingController _pickerController = TextEditingController();
   final TextEditingController _governorateController = TextEditingController();
+  String _governorateId = '1';
   final TextEditingController _cityController = TextEditingController();
 
   ReportBloc _reportBloc;
@@ -71,22 +74,27 @@ class _ReportScreenState extends State<ReportScreen> {
           width: MediaQuery.of(context).size.width,
           child: BlocConsumer<ReportBloc, ReportState>(
             listener: (context, state) {
+              if (state is ReportStateLoading)
+                return Center(
+                  child: SizedBox(
+                    height: 100,
+                    width: 100,
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              if (state is ReportStateSuccess) {
+                // Navigator.pushReplacement(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => AppLayout()),
+                // );
+                Phoenix.rebirth(context);
+              }
               if (state.isFailure) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   FailureSnackBar(error: state.error),
                 );
                 _reportBloc.add(ReportError(error: null));
               }
-              // if (state.isSubmitting)
-              //   ScaffoldMessenger.of(context)
-              //       .showSnackBar(signInSubmittingSnackBar(
-              //     context: context,
-              //   ));
-
-              // if (state.isSuccess) {
-              //   BlocProvider.of<AuthBloc>(context).add(AuthSignedIn());
-              //   Phoenix.rebirth(context);
-              // }
             },
             builder: (context, state) {
               List<Widget> forms = [
@@ -149,7 +157,6 @@ class _ReportScreenState extends State<ReportScreen> {
                             ? Validators.isValidName
                             : null,
                       ),
-                      SizedBox(height: 10),
                       customField(
                         title: "Gender",
                         input: state.gender,
@@ -172,7 +179,6 @@ class _ReportScreenState extends State<ReportScreen> {
                           }).toList(),
                         ),
                       ),
-                      SizedBox(height: 10),
                       customField(
                         title: "Age",
                         input: state.age.toString(),
@@ -199,7 +205,6 @@ class _ReportScreenState extends State<ReportScreen> {
                           },
                         ),
                       ),
-                      SizedBox(height: 10),
                       Container(
                         decoration: BoxDecoration(
                           border: Border(
@@ -282,24 +287,21 @@ class _ReportScreenState extends State<ReportScreen> {
                     ],
                   ),
                 ),
-                FutureBuilder<List<Governorate>>(
-                  future: _reportBloc.governorates(context),
-                  builder: (context, snapshot) {
-                    //   _governorateController.text = snapshot
-                    //       .data[int.parse(_governorateId) - 1]
-                    //       .governorateNameEnglish;
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return Text('Loading....');
-                      default:
-                        if (snapshot.hasError)
-                          return Text('Error: ${snapshot.error}');
-                        else {
-                          return Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              children: [
-                                customField(
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      FutureBuilder<List<Governorate>>(
+                        future: _reportBloc.governorates(context),
+                        builder: (context, snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.waiting:
+                              return SizedBox.shrink();
+                            default:
+                              if (snapshot.hasError)
+                                return Text('Error: ${snapshot.error}');
+                              else {
+                                return customField(
                                   title: "Governorate",
                                   input: state.governorate == null
                                       ? snapshot.data[0].governorateNameEnglish
@@ -317,48 +319,105 @@ class _ReportScreenState extends State<ReportScreen> {
                                         title: 'Pick Your Governorate',
                                         items: snapshot.data,
                                         selectedItem: snapshot.data[0],
-                                        onChanged: (value) {
+                                        onChanged: (governorate) {
+                                          _governorateId = governorate.id;
                                           _governorateController.text =
-                                              value.governorateNameEnglish;
+                                              governorate
+                                                  .governorateNameEnglish;
                                         },
                                       );
                                     },
                                   ),
-                                ),
-                                if (_typeController.text == "missing")
-                                  SizedBox(
-                                    height: 52,
-                                    child: DateTimeField(
-                                      format: DEFAULT_DATE_FORMAT,
-                                      controller: _dateController,
-                                      decoration: InputDecoration(
-                                        labelText: "When it happend?",
-                                        suffixIcon: Icon(
-                                          Icons.calendar_today,
-                                          color: _dateController.text.isNotEmpty
-                                              ? Theme.of(context).primaryColor
-                                              : null,
-                                        ),
-                                      ),
-                                      onShowPicker: (context, currentValue) {
-                                        return showDatePicker(
-                                          context: context,
-                                          firstDate: DateTime(1990),
-                                          initialDate:
-                                              currentValue ?? DateTime.now(),
-                                          lastDate: DateTime.now(),
-                                        );
-                                      },
+                                );
+                              }
+                          }
+                        },
+                      ),
+                      FutureBuilder<List<City>>(
+                        future: _reportBloc.governorateCities(
+                            context, _governorateId),
+                        builder: (context, snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.waiting:
+                              return SizedBox.shrink();
+                            default:
+                              if (snapshot.hasError)
+                                return Text('Error: ${snapshot.error}');
+                              else {
+                                return customField(
+                                  title: "City",
+                                  input: state.city == null
+                                      ? snapshot.data[0].cityNameEnglish
+                                      : state.city,
+                                  suffixWidget: IconButton(
+                                    icon: Icon(
+                                      Icons.location_city_rounded,
+                                      color: state.city != null
+                                          ? Theme.of(context).primaryColor
+                                          : null,
                                     ),
+                                    onPressed: () {
+                                      showMaterialScrollPicker<City>(
+                                        context: context,
+                                        title: 'Pick Your City',
+                                        items: snapshot.data,
+                                        selectedItem: snapshot.data[0],
+                                        onChanged: (city) {
+                                          _cityController.text =
+                                              city.cityNameEnglish;
+                                        },
+                                      );
+                                    },
                                   ),
-                                if (_typeController.text == "missing")
-                                  SizedBox(height: 10),
-                              ],
+                                );
+                              }
+                          }
+                        },
+                      ),
+                      if (_typeController.text == "missing")
+                        SizedBox(
+                          height: 52,
+                          child: DateTimeField(
+                            format: DEFAULT_DATE_FORMAT,
+                            controller: _dateController,
+                            decoration: InputDecoration(
+                              labelText: "When it happend?",
+                              suffixIcon: Icon(
+                                Icons.calendar_today,
+                                color: _dateController.text.isNotEmpty
+                                    ? Theme.of(context).primaryColor
+                                    : null,
+                              ),
                             ),
-                          );
-                        }
-                    }
-                  },
+                            onShowPicker: (context, currentValue) {
+                              return showDatePicker(
+                                context: context,
+                                firstDate: DateTime(1990),
+                                initialDate: currentValue ?? DateTime.now(),
+                                lastDate: DateTime.now(),
+                              );
+                            },
+                          ),
+                        ),
+                      TextFormField(
+                        keyboardType: TextInputType.text,
+                        autocorrect: false,
+                        maxLines: null,
+                        decoration: InputDecoration(
+                          labelText: "Description",
+                          suffixIcon: Icon(
+                            Icons.description,
+                            color: _descriptionController.text.isNotEmpty
+                                ? Theme.of(context).primaryColor
+                                : null,
+                          ),
+                        ),
+                        onFieldSubmitted: (description) {
+                          _descriptionController.text = description;
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ];
               return Stack(
@@ -418,7 +477,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           child: Center(
                             child: Form(
                               key: _formKeys[index],
-                              autovalidateMode: AutovalidateMode.always,
+                              // autovalidateMode: AutovalidateMode.always,
                               child: SingleChildScrollView(
                                 physics: BouncingScrollPhysics(),
                                 child: forms[index],
@@ -466,14 +525,13 @@ class _ReportScreenState extends State<ReportScreen> {
                                         .validate() &&
                                     state.image.isNotEmpty)
                                   moveForward();
-                                else if (_formKeys[state.page]
-                                    .currentState
-                                    .validate())
-                                  moveForward();
                                 else if (state.page ==
                                     FORM_HEADERS.length - 1) {
-                                  print('---------------------');
+                                  _onFormSubmitted();
                                 } // submite
+                                else if (_formKeys[state.page]
+                                    .currentState
+                                    .validate()) moveForward();
                               },
                               icon: state.page == FORM_HEADERS.length - 1
                                   ? Icons.done
@@ -537,7 +595,7 @@ class _ReportScreenState extends State<ReportScreen> {
       );
 
   void _onDateChange() => _reportBloc.add(
-        ReportDateChange(date: DateTime.parse(_dateController.text)),
+        ReportDateChange(date: DEFAULT_DATE_FORMAT.parse(_dateController.text)),
       );
 
   void _onImageChange() => _reportBloc.add(
@@ -563,7 +621,9 @@ class _ReportScreenState extends State<ReportScreen> {
           description: _descriptionController.text,
           gender: _genderController.text,
           age: int.parse(_ageController.text),
-          date: DateTime.parse(_dateController.text),
+          date: _dateController.text.isEmpty
+              ? null
+              : DEFAULT_DATE_FORMAT.parse(_dateController.text),
           governorate: _governorateController.text,
           city: _cityController.text,
           image: _imageController.text,

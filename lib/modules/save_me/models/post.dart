@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'address/location.dart';
 
+// enum PostType {missing, finding}
+
 class Post {
   // basic info
   final String uid; // missing:*, found:*

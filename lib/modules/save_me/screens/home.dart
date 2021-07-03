@@ -9,6 +9,7 @@ import '../../../widgets/app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:save_me/modules/save_me/repositories/post_repository.dart';
 
+// ignore: must_be_immutable
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key key}) : super(key: key);
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -22,19 +23,28 @@ class HomeScreen extends StatelessWidget {
         builder: (context, state) {
           return StreamBuilder<QuerySnapshot>(
             stream: _postRepo.posts,
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasData)
-                return viewPosts(
-                  context: context,
-                  posts: snapshot.data.docs.map((doc) {
-                    Map<String, dynamic> postMap = doc.data();
-                    if (postMap.containsKey('missingFrom'))
-                      return Missing.fromMap(postMap);
-                    return Finding.fromMap(postMap);
-                  }).toList(),
-                );
-              return Center(child: CircularProgressIndicator());
+            builder: (
+              BuildContext context,
+              AsyncSnapshot<QuerySnapshot> snapshot,
+            ) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return Center(child: CircularProgressIndicator());
+                default:
+                  if (snapshot.hasError)
+                    return Text('Error: ${snapshot.error}');
+                  else {
+                    return viewPosts(
+                      context: context,
+                      posts: snapshot.data.docs.map((doc) {
+                        Map<String, dynamic> postMap = doc.data();
+                        if (postMap.containsKey('missingFrom'))
+                          return Missing.fromMap(postMap);
+                        return Finding.fromMap(postMap);
+                      }).toList(),
+                    );
+                  }
+              }
             },
           );
         },

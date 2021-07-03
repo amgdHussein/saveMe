@@ -7,7 +7,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:save_me/modules/save_me/models/address/city.dart';
 import 'package:save_me/modules/save_me/models/address/governorate.dart';
+import 'package:save_me/modules/save_me/models/address/location.dart';
+import 'package:save_me/modules/save_me/models/post.dart';
 import 'package:save_me/modules/save_me/repositories/face_recognition_repository.dart';
+import 'package:save_me/modules/save_me/repositories/post_repository.dart';
 
 part 'report_event.dart';
 part 'report_state.dart';
@@ -15,6 +18,7 @@ part 'report_state.dart';
 class ReportBloc extends Bloc<ReportEvent, ReportState> {
   FaceRecognitionRepository _faceRecognitionRepository =
       FaceRecognitionRepository();
+  PostRepository _postRepository = PostRepository();
   ReportBloc() : super(ReportState.initial());
 
   Future<String> loadAsset(BuildContext context, String path) async {
@@ -154,8 +158,32 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
   }) async* {
     yield ReportStateLoading.fromReportState(state);
     try {
-      // append post
-
+      if (type == 'missing')
+        await _postRepository.addPost(Missing(
+          name: name,
+          age: age,
+          sex: gender,
+          location: PostLocation(city: city, governorate: governorate),
+          missingFrom: missingDate,
+          image: image,
+          description: description,
+          uploadDate: DateTime.now(),
+          pid: null,
+          uid: null,
+        ));
+      else {
+        await _postRepository.addPost(Finding(
+          name: name,
+          age: age,
+          sex: gender,
+          location: PostLocation(city: city, governorate: governorate),
+          image: image,
+          description: description,
+          uploadDate: DateTime.now(),
+          pid: null,
+          uid: null,
+        ));
+      }
       yield ReportStateSuccess();
     } catch (error) {
       yield state.update(error: error.toString());

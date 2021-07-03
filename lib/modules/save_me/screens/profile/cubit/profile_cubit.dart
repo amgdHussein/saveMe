@@ -11,6 +11,7 @@ import '../../../repositories/user_auth_repository.dart';
 part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
+  // ignore: unused_field
   final UserAuthRepository _userRepository =
       UserAuthRepository(firebaseAuth: FirebaseAuth.instance);
   ProfileCubit()
