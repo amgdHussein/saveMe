@@ -1,11 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:save_me/constants/app_constants.dart';
+import 'package:save_me/modules/save_me/models/firestore_user.dart';
+import 'package:save_me/modules/save_me/screens/profile/cubit/profile_cubit.dart';
+import 'package:save_me/modules/save_me/screens/profile/profile.dart';
 import '../../modules/save_me/models/post.dart';
 
 void displayPostInfo({
   @required BuildContext context,
   @required dynamic post,
-  @required String ownerName,
+  @required FirestoreUser owner,
 }) {
   showModalBottomSheet(
     context: context,
@@ -56,24 +62,14 @@ void displayPostInfo({
                           "Description",
                           style: TextStyle(fontSize: 20),
                         ),
-                        Row(
-                          children: [
-                            // Icon(
-                            //   Icons.reply,
-                            // ),
-                            // Icon(
-                            //   Icons.edit,
-                            // ),
-                            GestureDetector(
-                              child: Icon(
-                                Icons.close,
-                                color: Colors.redAccent,
-                              ),
-                              onTap: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
+                        GestureDetector(
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.redAccent,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
                         )
                       ],
                     ),
@@ -90,16 +86,27 @@ void displayPostInfo({
                 physics: BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                    ListTile(
-                      title: Text('Post Owner'),
-                      subtitle: Text(ownerName),
-                      onTap: () {},
-                    ),
+                    if (FirebaseAuth.instance.currentUser.uid != owner.uid)
+                      ListTile(
+                        title: Text('Post Owner'),
+                        subtitle: Text(owner.name),
+                        trailing: Icon(FontAwesomeIcons.idBadge),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BlocProvider(
+                                create: (context) => ProfileCubit(),
+                                child: ProfileScreen(user: owner),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ListTile(
                       title: Text('Upload date'),
-                      subtitle: Text(
-                        DateFormat('dd MMM, yyyy').format(post.uploadDate),
-                      ),
+                      subtitle:
+                          Text(DEFAULT_DATE_FORMAT.format(post.uploadDate)),
                     ),
                     SizedBox(
                       width: 200,
@@ -131,15 +138,14 @@ void displayPostInfo({
                     ListTile(
                       title: Text('Where it happens?'),
                       subtitle: Text(
-                        "${post.location.city}, ${post.location.governorate}",
+                        "${post.location.governorate}, ${post.location.city}",
                       ),
                     ),
                     if (post is Missing)
                       ListTile(
                         title: Text('When it happens?'),
-                        subtitle: Text(
-                          DateFormat('dd MMM, yyyy').format(post.missingFrom),
-                        ),
+                        subtitle:
+                            Text(DEFAULT_DATE_FORMAT.format(post.missingFrom)),
                       ),
                   ],
                 ),

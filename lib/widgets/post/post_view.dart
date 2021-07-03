@@ -8,46 +8,50 @@ Widget post({@required dynamic post, @required BuildContext context}) {
   return FutureBuilder(
     future: UserRepository().user(post.uid),
     builder: (BuildContext context, AsyncSnapshot<FirestoreUser> snapshot) {
-      return GestureDetector(
-        onTap: () {
-          displayPostInfo(
-            context: context,
-            post: post,
-            ownerName: snapshot.hasData ? snapshot.data.name : '',
-          );
-        },
-        child: Stack(
-          children: [
-            Image.network(post.image),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: 100,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [Colors.black54, Colors.transparent],
+      if (snapshot.hasError)
+        return Text('Error: ${snapshot.error}');
+      else {
+        return GestureDetector(
+          onTap: () {
+            displayPostInfo(
+              context: context,
+              post: post,
+              owner: snapshot.data,
+            );
+          },
+          child: Stack(
+            children: [
+              Image.network(post.image),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: 100,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [Colors.black54, Colors.transparent],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: 20,
-              left: 20,
-              child: Text(
-                snapshot.hasData ? snapshot.data.name : '',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
+              Positioned(
+                bottom: 20,
+                left: 20,
+                child: Text(
+                  post.name,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-      );
+            ],
+          ),
+        );
+      }
     },
   );
 }
