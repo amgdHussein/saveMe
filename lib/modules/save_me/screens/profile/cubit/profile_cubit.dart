@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:save_me/modules/save_me/repositories/user_repository.dart';
 import '../../../../../utils/helpers/image_pickers.dart';
 import '../../../repositories/user_auth_repository.dart';
 
@@ -12,8 +13,9 @@ part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   // ignore: unused_field
-  final UserAuthRepository _userRepository =
+  final UserAuthRepository _userAuthRepository =
       UserAuthRepository(firebaseAuth: FirebaseAuth.instance);
+  final UserRepository _userRepository = UserRepository();
   ProfileCubit()
       : super(ProfileInitial(user: FirebaseAuth.instance.currentUser));
 
@@ -23,12 +25,11 @@ class ProfileCubit extends Cubit<ProfileState> {
     });
   }
 
-  void updatePhoto({@required String url}) {
-    deletePhoto(imagePath: state.user.photoURL).then((_) {
-      state.user.updatePhotoURL(url).then((_) {
-        emit(UpdatingPhoto(user: FirebaseAuth.instance.currentUser));
-      });
-    });
+  void updatePhoto({@required String url}) async {
+    await deletePhoto(imagePath: state.user.photoURL);
+    await state.user.updatePhotoURL(url);
+    await _userRepository.updateUser(FirebaseAuth.instance.currentUser);
+    emit(UpdatingPhoto(user: FirebaseAuth.instance.currentUser));
   }
 
   Future<void> uploadPhoto({@required File imageFile}) async {

@@ -1,15 +1,26 @@
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:save_me/modules/save_me/models/firestore_user.dart';
+import 'package:save_me/modules/save_me/models/post.dart';
+import 'package:save_me/modules/save_me/repositories/post_repository.dart';
+import 'package:save_me/modules/save_me/screens/chat/chat_details.dart';
+import 'package:save_me/modules/save_me/screens/chat/cubit/chat_cubit.dart';
+import 'package:save_me/widgets/post/post_view.dart';
 import '../../../../core/auth/blocs/auth_bloc.dart';
 
 import 'cubit/profile_cubit.dart';
 import 'edit_profile.dart';
 
 class ProfileScreen extends StatefulWidget {
-  ProfileScreen({Key key}) : super(key: key);
+  final FirestoreUser _user;
+  ProfileScreen({Key key, FirestoreUser user})
+      : _user = user,
+        super(key: key);
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -17,117 +28,125 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen>
     with TickerProviderStateMixin {
-  // ScrollController _scrollController = ScrollController();
-  TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(vsync: this, length: 2);
-  }
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final PostRepository _postRepo = PostRepository();
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ProfileCubit, ProfileState>(
-      listener: (context, state) {},
+    String uid = widget._user == null
+        ? FirebaseAuth.instance.currentUser.uid
+        : widget._user.uid;
+
+    return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
         return Scaffold(
+          key: _scaffoldKey,
           backgroundColor: Theme.of(context).primaryColor,
           body: NestedScrollView(
             floatHeaderSlivers: true,
-            // controller: _scrollController,
             headerSliverBuilder: (context, bool innerBoxIsScrolled) => [
               SliverAppBar(
                 pinned: true,
                 elevation: 0,
                 expandedHeight: 300.0,
-                actions: [
-                  IconButton(
-                    icon: Icon(FontAwesomeIcons.userEdit),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProfileEditScreen(),
+                leading: SizedBox.shrink(),
+                actions: widget._user == null
+                    ? [
+                        IconButton(
+                          icon: Icon(FontAwesomeIcons.userEdit),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BlocProvider(
+                                  create: (context) => ProfileCubit(),
+                                  child: ProfileEditScreen(),
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(FontAwesomeIcons.signOutAlt),
-                    onPressed: () {
-                      BlocProvider.of<AuthBloc>(context).add(AuthSignedOut());
-                    },
-                  ),
-                ],
+                        IconButton(
+                          icon: Icon(FontAwesomeIcons.signOutAlt),
+                          onPressed: () {
+                            BlocProvider.of<AuthBloc>(context)
+                                .add(AuthSignedOut());
+                          },
+                        ),
+                      ]
+                    : [
+                        IconButton(
+                          icon: Icon(FontAwesomeIcons.commentDots),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BlocProvider(
+                                  create: (context) => ChatCubit(),
+                                  child: ChatDetails(),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(FontAwesomeIcons.times),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
                 flexibleSpace: FlexibleSpaceBar(
                   titlePadding: EdgeInsets.all(20),
-                  title: Text(state.user.displayName),
+                  title: Text(
+                    widget._user == null
+                        ? state.user.displayName
+                        : widget._user.name,
+                  ),
                   background: Image.network(
-                    state.user.photoURL,
+                    widget._user == null
+                        ? state.user.photoURL
+                        : widget._user.image,
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
-              SliverAppBar(
-                pinned: true,
-                stretch: true,
-                elevation: 0,
-                toolbarHeight: 0.0,
-                backgroundColor: Colors.transparent,
-                bottom: TabBar(
-                  controller: _tabController,
-                  indicatorPadding: EdgeInsets.all(5.0),
-                  labelColor: Theme.of(context).canvasColor,
-                  labelStyle: TextStyle(
-                    letterSpacing: 1.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  unselectedLabelColor: Theme.of(context).canvasColor,
-                  unselectedLabelStyle: TextStyle(
-                    fontWeight: FontWeight.normal,
-                  ),
-                  indicator: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  ),
-                  tabs: [
-                    Tab(text: "Your Posts"),
-                    Tab(text: "Saved Posts"),
-                  ],
-                ),
-              ),
             ],
-            body: TabBarView(
-              controller: _tabController,
-              children: [
-                buildImages(),
-                buildImages(),
-              ],
+            body: StreamBuilder<QuerySnapshot>(
+              stream: _postRepo.posts,
+              builder: (
+                BuildContext context,
+                AsyncSnapshot<QuerySnapshot> snapshot,
+              ) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return Center(child: CircularProgressIndicator());
+                  default:
+                    if (snapshot.hasError)
+                      return Text('Error: ${snapshot.error}');
+                    else {
+                      return viewPosts(
+                        context: context,
+                        posts: snapshot.data.docs.where((element) {
+                          Map<String, dynamic> map = element.data();
+                          return map['uid'] == uid;
+                        }).map(
+                          (post) {
+                            Map<String, dynamic> map = post.data();
+                            if (map.containsKey('missingFrom'))
+                              return Missing.fromMap(map);
+                            else
+                              return Finding.fromMap(map);
+                          },
+                        ).toList(),
+                      );
+                    }
+                }
+              },
             ),
           ),
         );
       },
     );
   }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  Widget buildImages() => Scrollbar(
-        child: ListView.separated(
-          // controller: _scrollController,
-          // padding: EdgeInsets.symmetric(vertical: 20.0),
-          // physics: BouncingScrollPhysics(),
-          itemBuilder: (context, index) => Image.network(
-            "https://media.sproutsocial.com/uploads/2017/11/Social-Media-Branding.png",
-            fit: BoxFit.fitWidth,
-          ),
-          separatorBuilder: (context, index) => Divider(height: 3),
-          itemCount: 5,
-        ),
-      );
 }

@@ -15,8 +15,7 @@ class ProfileEditScreen extends StatelessWidget {
   final TextEditingController _userNameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ProfileCubit, ProfileState>(
-      listener: (context, state) {},
+    return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
         _userNameController.text = state.user.displayName;
         return Scaffold(
