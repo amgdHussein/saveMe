@@ -83,10 +83,6 @@ class _ReportScreenState extends State<ReportScreen> {
                   ),
                 );
               if (state is ReportStateSuccess) {
-                // Navigator.pushReplacement(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => AppLayout()),
-                // );
                 Phoenix.rebirth(context);
               }
               if (state.isFailure) {

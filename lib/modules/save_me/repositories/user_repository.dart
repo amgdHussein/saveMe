@@ -5,6 +5,10 @@ import '../models/firestore_user.dart';
 class UserRepository {
   final _firestoreInstance = FirebaseFirestore.instance;
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> get users {
+    return _firestoreInstance.collection('users').snapshots();
+  }
+
   Future<FirestoreUser> user(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> doc =
         await _firestoreInstance.collection('users').doc(uid).get();
@@ -16,10 +20,6 @@ class UserRepository {
         .collection('users')
         .doc(user.uid)
         .set(FirestoreUser.fromFirebaseUser(user).toMap());
-  }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> get users {
-    return _firestoreInstance.collection('users').snapshots();
   }
 
   Future<void> updateUser(User user) async {

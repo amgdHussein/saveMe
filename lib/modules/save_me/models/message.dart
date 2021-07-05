@@ -5,19 +5,15 @@ import 'package:flutter/cupertino.dart';
 class Message {
   final String content;
   final DateTime date;
-  final String image;
-  final bool isLast;
-  final String reciverId;
-  final String senderId;
+  final String sid;
+  final String rid;
   final String mid;
 
   Message({
     @required this.content,
     @required this.date,
-    @required this.image,
-    @required this.isLast,
-    @required this.reciverId,
-    @required this.senderId,
+    @required this.sid,
+    @required this.rid,
     this.mid,
   });
 
@@ -25,11 +21,9 @@ class Message {
     return {
       'content': content,
       'date': date.millisecondsSinceEpoch,
-      'image': image,
-      'isLast': isLast,
-      'reciverId': reciverId,
-      'senderId': senderId,
       'mid': mid,
+      'sid': sid,
+      'rid': rid,
     };
   }
 
@@ -37,10 +31,8 @@ class Message {
     return Message(
       content: map['content'],
       date: DateTime.fromMillisecondsSinceEpoch(map['date']),
-      image: map['image'],
-      isLast: map['isLast'],
-      reciverId: map['reciverId'],
-      senderId: map['senderId'],
+      sid: map['sid'],
+      rid: map['rid'],
       mid: map['mid'],
     );
   }
@@ -49,4 +41,20 @@ class Message {
 
   factory Message.fromJson(String source) =>
       Message.fromMap(json.decode(source));
+
+  Message copyWith({
+    String content,
+    DateTime date,
+    String sid,
+    String rid,
+    String mid,
+  }) {
+    return Message(
+      content: content ?? this.content,
+      date: date ?? this.date,
+      sid: sid ?? this.sid,
+      rid: rid ?? this.rid,
+      mid: mid ?? this.mid,
+    );
+  }
 }

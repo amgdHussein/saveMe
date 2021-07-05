@@ -34,10 +34,7 @@ class HomeScreen extends StatelessWidget {
         ),
         body: StreamBuilder<QuerySnapshot>(
           stream: _postRepo.posts,
-          builder: (
-            BuildContext context,
-            AsyncSnapshot<QuerySnapshot> snapshot,
-          ) {
+          builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
                 return Center(child: CircularProgressIndicator());

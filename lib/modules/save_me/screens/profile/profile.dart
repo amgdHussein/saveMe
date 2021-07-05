@@ -9,7 +9,6 @@ import 'package:save_me/modules/save_me/models/firestore_user.dart';
 import 'package:save_me/modules/save_me/models/post.dart';
 import 'package:save_me/modules/save_me/repositories/post_repository.dart';
 import 'package:save_me/modules/save_me/screens/chat/chat_details.dart';
-import 'package:save_me/modules/save_me/screens/chat/cubit/chat_cubit.dart';
 import 'package:save_me/widgets/post/post_view.dart';
 import '../../../../core/auth/blocs/auth_bloc.dart';
 
@@ -81,9 +80,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => BlocProvider(
-                                  create: (context) => ChatCubit(),
-                                  child: ChatDetails(),
+                                builder: (context) => MessagesScreen(
+                                  user: widget._user,
                                 ),
                               ),
                             );
