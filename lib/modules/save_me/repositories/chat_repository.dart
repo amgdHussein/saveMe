@@ -5,25 +5,57 @@ import 'package:save_me/modules/save_me/models/message.dart';
 class ConversationRepository {
   final FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
 
-  Future<QuerySnapshot<Map<String, dynamic>>> get conversations {
+  Stream<QuerySnapshot<Map<String, dynamic>>> get conversations {
     return _firestoreInstance
         .collection('conversations')
         .doc(FirebaseAuth.instance.currentUser.uid)
         .collection('chats')
-        .get();
+        .snapshots();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> messages(sid) {
+  Future<void> setChatId(String sid, String rid) async {
+    await _firestoreInstance
+        .collection('conversations')
+        .doc(sid)
+        .set({'uid': sid});
+
+    await _firestoreInstance
+        .collection('conversations')
+        .doc(rid)
+        .set({'uid': rid});
+  }
+
+  Future<void> setConversationId(String sid, String rid) async {
+    await _firestoreInstance
+        .collection('conversations')
+        .doc(sid)
+        .collection('chats')
+        .doc(rid)
+        .set({'uid': rid});
+
+    await _firestoreInstance
+        .collection('conversations')
+        .doc(rid)
+        .collection('chats')
+        .doc(sid)
+        .set({'uid': sid});
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> messages(String sid) {
     return _firestoreInstance
         .collection('conversations')
         .doc(FirebaseAuth.instance.currentUser.uid)
         .collection('chats')
         .doc(sid)
         .collection('messages')
+        .orderBy("date", descending: true)
         .snapshots();
   }
 
   Future<void> addMessage(Message message) async {
+    await setConversationId(message.sid, message.rid);
+    await setChatId(message.sid, message.rid);
+
     DocumentReference<Map<String, dynamic>> _senderRef = _firestoreInstance
         .collection('conversations')
         .doc(message.sid)
@@ -45,14 +77,23 @@ class ConversationRepository {
     await _reciverRef.set(message.copyWith(mid: _reciverRef.id).toMap());
   }
 
-  Future<dynamic> deleteMessage(String sid, String mid) async {
-    return await _firestoreInstance
-        .collection('conversations')
-        .doc(FirebaseAuth.instance.currentUser.uid)
-        .collection('chats')
-        .doc(sid)
-        .collection('messages')
-        .doc(mid)
-        .delete();
+  Future<void> deleteMessage(String sid) async {
+    CollectionReference<Map<String, dynamic>> chatsReferences =
+        _firestoreInstance
+            .collection('conversations')
+            .doc(FirebaseAuth.instance.currentUser.uid)
+            .collection('chats');
+
+    CollectionReference<Map<String, dynamic>> messagesReferences =
+        chatsReferences.doc(sid).collection('messages');
+
+    QuerySnapshot<Map<String, dynamic>> snapshot =
+        await messagesReferences.get();
+
+    snapshot.docs.forEach((element) async {
+      await messagesReferences.doc(element.id).delete();
+    });
+
+    await chatsReferences.doc(sid).delete();
   }
 }

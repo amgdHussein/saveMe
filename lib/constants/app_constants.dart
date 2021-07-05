@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 
 // ignore: non_constant_identifier_names
 DateFormat DEFAULT_DATE_FORMAT = DateFormat("MMM d, yyyy");
+// DateFormat DEFAULT_MESSAGE_DATE_FORMAT = DateFormat("MMM d, yyyy  h:m a");
 
 const List<String> FORM_HEADERS = [
   'Category',
