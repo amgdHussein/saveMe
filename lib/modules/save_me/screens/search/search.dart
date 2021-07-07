@@ -209,7 +209,16 @@ class _SearchScreenState extends State<SearchScreen> {
             },
             fallbackBuilder: (context) {
               // image recognize
-              return SizedBox();
+              return Center(
+                child: Text(
+                  "Oops...",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    color: Colors.black38,
+                    fontSize: 32,
+                  ),
+                ),
+              );
             },
           ),
         );

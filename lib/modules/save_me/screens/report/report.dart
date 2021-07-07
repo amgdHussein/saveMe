@@ -97,18 +97,22 @@ class _ReportScreenState extends State<ReportScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    ['finding'],
-                    ['missing'],
+                    ['finding', 'assets/images/find-my-friend.png'],
+                    ['missing', 'assets/images/missing.png'],
                   ].map((items) {
-                    return Column(
-                      children: [
-                        CircleAvatar(radius: 50),
-                        SizedBox(height: 30),
-                        GestureDetector(
-                          onTap: () {
-                            _typeController.text = items[0];
-                          },
-                          child: Container(
+                    return GestureDetector(
+                      onTap: () {
+                        _typeController.text = items[0];
+                      },
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 140,
+                            width: 100,
+                            child: Image.asset(items[1], fit: BoxFit.contain),
+                          ),
+                          SizedBox(height: 30),
+                          Container(
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(
@@ -127,8 +131,8 @@ class _ReportScreenState extends State<ReportScreen> {
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     );
                   }).toList(),
                 ),
@@ -428,12 +432,13 @@ class _ReportScreenState extends State<ReportScreen> {
                     ),
                   ),
                   Positioned(
-                    top: 80,
+                    top: 50,
                     left: 50,
                     right: 50,
                     child: CircleAvatar(
-                      radius: 60,
+                      radius: 80,
                       backgroundColor: Colors.white,
+                      backgroundImage: AssetImage("assets/images/log.jpg"),
                     ),
                   ),
                   Positioned(
@@ -473,7 +478,6 @@ class _ReportScreenState extends State<ReportScreen> {
                           child: Center(
                             child: Form(
                               key: _formKeys[index],
-                              // autovalidateMode: AutovalidateMode.always,
                               child: SingleChildScrollView(
                                 physics: BouncingScrollPhysics(),
                                 child: forms[index],
