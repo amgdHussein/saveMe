@@ -4,14 +4,10 @@ A mobile app used to help the community find people (children) in the event of t
 ## Onboarding
 <img src="https://github.com/Amgd2112/save-me/blob/main/snapshots/onboarding.jpg" width="250">
 
-## Sign in
-![](https://github.com/Amgd2112/save-me/blob/main/snapshots/sign%20in.jpg)
 
-## Sign up
-![](https://github.com/Amgd2112/save-me/blob/main/snapshots/sign%20up.jpg)
-
-## Email Verification
-![](https://github.com/Amgd2112/save-me/blob/main/snapshots/email-verfiy.jpg)
+| Sign in    | Sign up     | Email Verification   |
+|------------|-------------|----------------------|
+|<img src="https://github.com/Amgd2112/save-me/blob/main/snapshots/sign%20in.jpg" width="250">  | <img src="https://github.com/Amgd2112/save-me/blob/main/snapshots/sign%20up.jpg" width="250"> |<img src="https://github.com/Amgd2112/save-me/blob/main/snapshots/email-verfiy.jpg" width="250"> |
 
 ## Home
 ![](https://github.com/Amgd2112/save-me/blob/main/snapshots/missing.png)
