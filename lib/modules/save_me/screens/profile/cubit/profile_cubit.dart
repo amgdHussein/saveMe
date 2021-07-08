@@ -5,7 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:save_me/modules/save_me/repositories/user_repository.dart';
+import '../../../repositories/user_repository.dart';
 import '../../../../../utils/helpers/image_pickers.dart';
 import '../../../repositories/user_auth_repository.dart';
 

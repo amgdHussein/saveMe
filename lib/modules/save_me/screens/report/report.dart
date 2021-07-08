@@ -8,14 +8,14 @@ import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
 import 'package:flutter_material_pickers/helpers/show_scroll_picker.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:save_me/config/themes/colors.dart';
-import 'package:save_me/constants/app_constants.dart';
-import 'package:save_me/modules/save_me/models/address/city.dart';
-import 'package:save_me/modules/save_me/models/address/governorate.dart';
-import 'package:save_me/modules/save_me/screens/report/bloc/report_bloc.dart';
-import 'package:save_me/utils/helpers/image_pickers.dart';
-import 'package:save_me/utils/mixins/validation_mixins.dart';
-import 'package:save_me/widgets/snack_bars/failure.dart';
+import '../../../../config/themes/colors.dart';
+import '../../../../constants/app_constants.dart';
+import '../../models/address/city.dart';
+import '../../models/address/governorate.dart';
+import 'bloc/report_bloc.dart';
+import '../../../../utils/helpers/image_pickers.dart';
+import '../../../../utils/mixins/validation_mixins.dart';
+import '../../../../widgets/snack_bars/failure.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class ReportScreen extends StatefulWidget {

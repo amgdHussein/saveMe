@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:save_me/constants/app_constants.dart';
-import 'package:save_me/modules/save_me/models/firestore_user.dart';
-import 'package:save_me/modules/save_me/screens/profile/cubit/profile_cubit.dart';
-import 'package:save_me/modules/save_me/screens/profile/profile.dart';
+import '../../constants/app_constants.dart';
+import '../../modules/save_me/models/firestore_user.dart';
+import '../../modules/save_me/screens/profile/cubit/profile_cubit.dart';
+import '../../modules/save_me/screens/profile/profile.dart';
 import '../../modules/save_me/models/post.dart';
 
 void displayPostInfo({

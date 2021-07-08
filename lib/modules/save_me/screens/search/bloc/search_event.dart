@@ -124,3 +124,15 @@ class FilterElderlyChange extends SearchEvent {
   @override
   String toString() => 'FilterElderlyChange(isElderly: $isElderly)';
 }
+
+class FilterImageChange extends SearchEvent {
+  final String image;
+  final bool isGallery;
+  FilterImageChange({this.image, this.isGallery});
+
+  @override
+  List<Object> get props => [image, isGallery];
+
+  @override
+  String toString() => 'FilterImageChange(image: $image, isGallery: $isGallery)';
+}

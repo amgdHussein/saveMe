@@ -4,11 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
-import 'package:save_me/modules/save_me/repositories/chat_repository.dart';
-import 'package:save_me/modules/save_me/repositories/user_repository.dart';
-import 'package:save_me/modules/save_me/screens/chat/bloc/chat_search_bloc.dart';
-import 'package:save_me/widgets/chat/chat_list_tile.dart';
-import 'package:save_me/widgets/user_list_tile.dart';
+import '../../repositories/chat_repository.dart';
+import '../../repositories/user_repository.dart';
+import 'bloc/chat_search_bloc.dart';
+import '../../../../widgets/chat/chat_list_tile.dart';
+import '../../../../widgets/user_list_tile.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -118,7 +118,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               QuerySnapshot documents = snapshot.data;
                               List<DocumentSnapshot> docs = documents.docs;
 
-                              return UsersChatListTile(
+                              return usersChatListTile(
                                 docs: docs.where(
                                   (user) {
                                     Map<String, dynamic> map = user.data();

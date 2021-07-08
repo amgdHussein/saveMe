@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+
 import 'address/location.dart';
 
 // enum PostType {missing, finding}

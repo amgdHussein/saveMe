@@ -1,15 +1,14 @@
-import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:save_me/modules/save_me/models/firestore_user.dart';
-import 'package:save_me/modules/save_me/models/post.dart';
-import 'package:save_me/modules/save_me/repositories/post_repository.dart';
-import 'package:save_me/modules/save_me/screens/chat/chat_details.dart';
-import 'package:save_me/widgets/post/post_view.dart';
+import '../../models/firestore_user.dart';
+import '../../models/post.dart';
+import '../../repositories/post_repository.dart';
+import '../chat/chat_details.dart';
+import '../../../../widgets/post/post_view.dart';
 import '../../../../core/auth/blocs/auth_bloc.dart';
 
 import 'cubit/profile_cubit.dart';

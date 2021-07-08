@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
-import 'package:save_me/modules/save_me/models/post.dart';
-import 'package:save_me/modules/save_me/repositories/post_repository.dart';
-import 'package:save_me/modules/save_me/screens/search/bloc/search_bloc.dart';
-import 'package:save_me/widgets/post/post_view.dart';
+import 'package:save_me/modules/save_me/repositories/face_recognition_repository.dart';
+import 'package:save_me/utils/helpers/image_pickers.dart';
+import '../../models/post.dart';
+import '../../repositories/post_repository.dart';
+import 'bloc/search_bloc.dart';
+import '../../../../widgets/post/post_view.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -15,6 +18,8 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final PostRepository _postRepository = PostRepository();
+  final FaceRecognitionRepository _faceRecognitionRepository =
+      FaceRecognitionRepository();
   final TextEditingController _searchController = TextEditingController();
   SearchBloc _searchBloc;
 
@@ -78,10 +83,6 @@ class _SearchScreenState extends State<SearchScreen> {
                   Icons.search,
                   color: Colors.grey.shade600,
                 ),
-                suffixIcon: IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.image),
-                ),
                 filled: true,
                 fillColor: Colors.grey.shade200,
                 contentPadding: EdgeInsets.all(8),
@@ -99,6 +100,52 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
             ),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  state.image.isNotEmpty && state.isGallery
+                      ? Icons.close
+                      : Icons.photo_library,
+                ),
+                onPressed: () async {
+                  state.image.isNotEmpty && state.isGallery
+                      ? _searchBloc.add(
+                          FilterImageChange(
+                            image: '',
+                            isGallery: false,
+                          ),
+                        )
+                      : _searchBloc.add(
+                          FilterImageChange(
+                            image: await imgFromGallery(),
+                            isGallery: true,
+                          ),
+                        );
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  state.image.isNotEmpty && !state.isGallery
+                      ? Icons.close
+                      : Icons.photo_camera,
+                ),
+                onPressed: () async {
+                  state.image.isNotEmpty && !state.isGallery
+                      ? _searchBloc.add(
+                          FilterImageChange(
+                            image: '',
+                            isGallery: false,
+                          ),
+                        )
+                      : _searchBloc.add(
+                          FilterImageChange(
+                            image: await imgFromCamera(),
+                            isGallery: false,
+                          ),
+                        );
+                },
+              ),
+            ],
             bottom: PreferredSize(
               child: Container(
                 height: 50,
@@ -133,8 +180,11 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
           body: Conditional.single(
             context: context,
-            conditionBuilder: (context) =>
-                state.search.isNotEmpty || state.isPopulated,
+            conditionBuilder: (context) {
+              return state.search.isNotEmpty ||
+                  state.isPopulated ||
+                  state.image.isNotEmpty;
+            },
             widgetBuilder: (context) {
               return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: _postRepository.posts,
@@ -149,58 +199,39 @@ class _SearchScreenState extends State<SearchScreen> {
                         QuerySnapshot documents = snapshot.data;
                         List<DocumentSnapshot> docs = documents.docs;
 
-                        return viewPosts(
-                          context: context,
-                          posts: docs.where((post) {
-                            Map<String, dynamic> map = post.data();
-                            return map['name']
-                                .toLowerCase()
-                                .contains(state.search);
-                          }).where((post) {
-                            Map<String, dynamic> map = post.data();
+                        // search image results
+                        if (state.image.isNotEmpty)
+                          return FutureBuilder(
+                            future: _faceRecognitionRepository.recognizeImage(
+                              imagePath: state.image,
+                            ),
+                            builder: (context, recognizeSnapshot) {
+                              switch (recognizeSnapshot.connectionState) {
+                                case ConnectionState.waiting:
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                default:
+                                  if (recognizeSnapshot.hasError)
+                                    return Text(
+                                        'Error: ${recognizeSnapshot.error}');
+                                  else {
+                                    List<dynamic> pids = recognizeSnapshot.data;
+                                    return searchResults(
+                                      state: state,
+                                      docs: docs.where((post) {
+                                        Map<String, dynamic> map = post.data();
+                                        return pids.contains(map['pid']);
+                                      }).toList(),
+                                    );
+                                  }
+                              }
+                            },
+                          );
 
-                            bool target = true;
-
-                            target = state.isMissing
-                                ? map.containsKey('missingFrom')
-                                : target;
-
-                            target = state.isFinding
-                                ? (!map.containsKey('missingFrom'))
-                                : target;
-
-                            target = state.isFemale
-                                ? map['sex'] == 'female'
-                                : target;
-
-                            target =
-                                state.isMale ? map['sex'] == 'male' : target;
-
-                            target = state.isToddler
-                                ? 2 <= map['age'] && 3 >= map['age']
-                                : target;
-
-                            target = state.isChild
-                                ? 13 < map['age'] && 19 >= map['age']
-                                : target;
-
-                            target = state.isTeenager
-                                ? 13 < map['age'] && 19 >= map['age']
-                                : target;
-
-                            target = state.isAdult
-                                ? 19 < map['age'] && 60 >= map['age']
-                                : target;
-
-                            target = state.isElderly ? map['age'] > 60 : target;
-
-                            return target;
-                          }).map((post) {
-                            Map<String, dynamic> map = post.data();
-                            return map.containsKey('missingFrom')
-                                ? Missing.fromMap(map)
-                                : Finding.fromMap(map);
-                          }).toList(),
+                        return searchResults(
+                          state: state,
+                          docs: docs,
                         );
                       }
                   }
@@ -208,7 +239,6 @@ class _SearchScreenState extends State<SearchScreen> {
               );
             },
             fallbackBuilder: (context) {
-              // image recognize
               return Center(
                 child: Text(
                   "Oops...",
@@ -281,6 +311,40 @@ class _SearchScreenState extends State<SearchScreen> {
   void _onFilterElderlyChange(bool isElderly) {
     _searchBloc.add(
       FilterElderlyChange(isElderly: isElderly),
+    );
+  }
+
+  Widget searchResults({
+    SearchState state,
+    List<DocumentSnapshot> docs,
+  }) {
+    return viewPosts(
+      context: context,
+      posts: docs.where((post) {
+        Map<String, dynamic> map = post.data();
+        return map['name'].toLowerCase().contains(state.search.toLowerCase());
+      }).where((filtered) {
+        Map<String, dynamic> map = filtered.data();
+
+        bool target = true;
+
+        target = state.isMissing ? map.containsKey('missingFrom') : target;
+        target = state.isFinding ? (!map.containsKey('missingFrom')) : target;
+        target = state.isFemale ? map['sex'] == 'female' : target;
+        target = state.isMale ? map['sex'] == 'male' : target;
+        target = state.isToddler ? 2 <= map['age'] && 3 >= map['age'] : target;
+        target = state.isChild ? 3 < map['age'] && 13 >= map['age'] : target;
+        target =
+            state.isTeenager ? 13 < map['age'] && 19 >= map['age'] : target;
+        target = state.isAdult ? 19 < map['age'] && 60 >= map['age'] : target;
+        target = state.isElderly ? map['age'] > 60 : target;
+        return target;
+      }).map((post) {
+        Map<String, dynamic> map = post.data();
+        return map.containsKey('missingFrom')
+            ? Missing.fromMap(map)
+            : Finding.fromMap(map);
+      }).toList(),
     );
   }
 }

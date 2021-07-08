@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'colors.dart';
 
 ThemeData appTheme = ThemeData(
@@ -7,7 +8,6 @@ ThemeData appTheme = ThemeData(
   visualDensity: VisualDensity.adaptivePlatformDensity,
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     type: BottomNavigationBarType.fixed,
-    // elevation: 0.0,
     selectedIconTheme: IconThemeData(opacity: 1.0, size: 24),
     unselectedIconTheme: IconThemeData(opacity: 0.3, size: 24),
   ),
@@ -57,6 +57,5 @@ ThemeData appTheme = ThemeData(
   ),
   iconTheme: IconThemeData(
     color: GRAY_CHATEAU,
-    // size: 30,
   ),
 );

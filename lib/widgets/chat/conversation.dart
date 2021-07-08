@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:save_me/config/themes/chat_theme.dart';
-import 'package:save_me/constants/app_constants.dart';
-import 'package:save_me/modules/save_me/models/firestore_user.dart';
-import 'package:save_me/modules/save_me/models/message.dart';
+import '../../config/themes/chat_theme.dart';
+import '../../constants/app_constants.dart';
+import '../../modules/save_me/models/firestore_user.dart';
+import '../../modules/save_me/models/message.dart';
 
 class Conversation extends StatelessWidget {
   const Conversation({Key key, @required this.user, @required this.messages})

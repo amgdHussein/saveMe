@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:save_me/modules/save_me/models/firestore_user.dart';
-import 'package:save_me/modules/save_me/models/message.dart';
-import 'package:save_me/modules/save_me/repositories/chat_repository.dart';
-import 'package:save_me/widgets/chat/conversation.dart';
+import '../../models/firestore_user.dart';
+import '../../models/message.dart';
+import '../../repositories/chat_repository.dart';
+import '../../../../widgets/chat/conversation.dart';
 
 class MessagesScreen extends StatelessWidget {
   MessagesScreen({Key key, this.user}) : super(key: key);

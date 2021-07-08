@@ -11,6 +11,8 @@ class SearchState {
   final bool isTeenager;
   final bool isAdult;
   final bool isElderly;
+  final String image;
+  final bool isGallery;
 
   SearchState({
     @required this.search,
@@ -23,6 +25,8 @@ class SearchState {
     @required this.isTeenager,
     @required this.isAdult,
     @required this.isElderly,
+    @required this.image,
+    @required this.isGallery,
   });
 
   bool get isPopulated =>
@@ -48,6 +52,8 @@ class SearchState {
       isTeenager: false,
       isAdult: false,
       isElderly: false,
+      image: '',
+      isGallery: false,
     );
   }
 
@@ -62,6 +68,8 @@ class SearchState {
     bool isTeenager,
     bool isAdult,
     bool isElderly,
+    String image,
+    bool isGallery,
   ) {
     return SearchState(
       search: search,
@@ -74,6 +82,8 @@ class SearchState {
       isTeenager: isTeenager,
       isAdult: isAdult,
       isElderly: isElderly,
+      image: image,
+      isGallery: isGallery,
     );
   }
   SearchState update({
@@ -87,6 +97,8 @@ class SearchState {
     bool isTeenager,
     bool isAdult,
     bool isElderly,
+    String image,
+    bool isGallery,
   }) {
     return copyWith(
       search: search,
@@ -99,6 +111,8 @@ class SearchState {
       isTeenager: isTeenager,
       isAdult: isAdult,
       isElderly: isElderly,
+      image: image,
+      isGallery: isGallery,
     );
   }
 
@@ -113,6 +127,8 @@ class SearchState {
     bool isTeenager,
     bool isAdult,
     bool isElderly,
+    String image,
+    bool isGallery,
   }) {
     return SearchState(
       search: search ?? this.search,
@@ -125,11 +141,13 @@ class SearchState {
       isTeenager: isTeenager ?? this.isTeenager,
       isAdult: isAdult ?? this.isAdult,
       isElderly: isElderly ?? this.isElderly,
+      image: image ?? this.image,
+      isGallery: isGallery ?? this.isGallery,
     );
   }
 
   @override
   String toString() {
-    return 'SearchState(search: $search, isMissing: $isMissing, isFinding: $isFinding, isFemale: $isFemale, isMale: $isMale, isToddler: $isToddler, isChild: $isChild, isTeenager: $isTeenager, isAdult: $isAdult, isElderly: $isElderly)';
+    return 'SearchState(search: $search, isMissing: $isMissing, isFinding: $isFinding, isFemale: $isFemale, isMale: $isMale, isToddler: $isToddler, isChild: $isChild, isTeenager: $isTeenager, isAdult: $isAdult, isElderly: $isElderly, image: $image, isGallery: $isGallery)';
   }
 }

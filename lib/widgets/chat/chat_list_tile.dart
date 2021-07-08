@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:save_me/constants/app_constants.dart';
-import 'package:save_me/modules/save_me/models/firestore_user.dart';
-import 'package:save_me/modules/save_me/models/message.dart';
-import 'package:save_me/modules/save_me/repositories/chat_repository.dart';
-import 'package:save_me/modules/save_me/repositories/user_repository.dart';
-import 'package:save_me/modules/save_me/screens/chat/chat_details.dart';
+import '../../constants/app_constants.dart';
+import '../../modules/save_me/models/firestore_user.dart';
+import '../../modules/save_me/models/message.dart';
+import '../../modules/save_me/repositories/chat_repository.dart';
+import '../../modules/save_me/repositories/user_repository.dart';
+import '../../modules/save_me/screens/chat/chat_details.dart';
 
 // ignore: non_constant_identifier_names
 Widget ChatListTile(List<DocumentSnapshot> docs) {

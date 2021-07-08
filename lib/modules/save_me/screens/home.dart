@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:save_me/widgets/app_logo.dart';
+import '../../../widgets/app_logo.dart';
 import '../models/post.dart';
 import '../../../widgets/post/post_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:save_me/modules/save_me/repositories/post_repository.dart';
+import '../repositories/post_repository.dart';
 
 // ignore: must_be_immutable
 class HomeScreen extends StatelessWidget {

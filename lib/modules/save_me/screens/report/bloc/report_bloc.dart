@@ -5,12 +5,12 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:save_me/modules/save_me/models/address/city.dart';
-import 'package:save_me/modules/save_me/models/address/governorate.dart';
-import 'package:save_me/modules/save_me/models/address/location.dart';
-import 'package:save_me/modules/save_me/models/post.dart';
-import 'package:save_me/modules/save_me/repositories/face_recognition_repository.dart';
-import 'package:save_me/modules/save_me/repositories/post_repository.dart';
+import '../../../models/address/city.dart';
+import '../../../models/address/governorate.dart';
+import '../../../models/address/location.dart';
+import '../../../models/post.dart';
+import '../../../repositories/face_recognition_repository.dart';
+import '../../../repositories/post_repository.dart';
 
 part 'report_event.dart';
 part 'report_state.dart';
@@ -121,9 +121,8 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
   Stream<ReportState> _mapReportImageChangeToState(String image) async* {
     yield ReportStateLoading.fromReportState(state);
-    dynamic response = await _faceRecognitionRepository.isValidImage(
-      imageFile: File(image),
-    );
+    dynamic response =
+        await _faceRecognitionRepository.isValidImage(imagePath: image);
     if (response == true)
       yield state.update(image: image);
     else {
