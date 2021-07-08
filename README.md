@@ -3,7 +3,7 @@ A mobile app used to help the community find people (children) in the event of t
 
 
 ## Onboarding
-| Introductino |
+| First Screen |
 |--------------|
 |<img src="https://github.com/Amgd2112/save-me/blob/main/snapshots/onboarding.jpg" width="250">  |
 
@@ -21,9 +21,9 @@ A mobile app used to help the community find people (children) in the event of t
 
 ## Chat
 
-| Conversations   | Chat Screen   |
-|-----------------|---------------|
-|<img src="https://github.com/Amgd2112/save-me/blob/main/snapshots/chat.jpg" width="250"> | <img src="https://github.com/Amgd2112/save-me/blob/main/snapshots/conver.png" width="250"> |
+| Conversations   | Messages    |
+|-----------------|-------------|
+|<img src="https://github.com/Amgd2112/save-me/blob/main/snapshots/conver.png" width="250"> | <img src="https://github.com/Amgd2112/save-me/blob/main/snapshots/chat.jpg" width="250"> |
 
 
 ## Report Form
