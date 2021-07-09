@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:save_me/core/auth/blocs/auth_bloc.dart';
 import 'package:save_me/utils/mixins/validation_mixins.dart';
-import 'package:save_me/widgets/snack_bars/sign_in_failure.dart';
-import 'package:save_me/widgets/snack_bars/sign_in_submitting.dart';
+import 'package:save_me/widgets/snack_bars/sign_failure.dart';
+import 'package:save_me/widgets/snack_bars/sign_submitting.dart';
 import 'bloc/sign_up_bloc.dart';
 
 class SignUpForm extends StatefulWidget {
@@ -46,11 +46,15 @@ class _SignUpFormState extends State<SignUpForm> {
     return BlocListener<SignUpBloc, SignUpState>(
       listener: (context, state) {
         if (state.isFailure)
-          ScaffoldMessenger.of(context).showSnackBar(singInFailureSnackBar());
+          ScaffoldMessenger.of(context)
+              .showSnackBar(failureSnackBar("Sign up"));
 
         if (state.isSubmitting)
           ScaffoldMessenger.of(context).showSnackBar(
-            signInSubmittingSnackBar(context: context),
+            submittingSnackBar(
+              context: context,
+              title: "Signing UP...",
+            ),
           );
 
         if (state.isSuccess) {

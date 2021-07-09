@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-Widget signInSubmittingSnackBar({@required BuildContext context}) => SnackBar(
+Widget submittingSnackBar({@required BuildContext context, String title}) => SnackBar(
       backgroundColor: Theme.of(context).primaryColor,
       content: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("Signing In..."),
+          Text(title),
           SizedBox(
             height: 15,
             width: 15,
