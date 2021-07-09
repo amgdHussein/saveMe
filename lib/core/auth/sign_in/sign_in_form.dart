@@ -1,4 +1,3 @@
-// import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,13 +40,12 @@ class _SignInFormState extends State<SignInForm> {
     return BlocListener<SignInBloc, SignInState>(
       listener: (context, state) {
         if (state.isFailure)
-          ScaffoldMessenger.of(context).showSnackBar(failureSnackBar("Sign in"));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(failureSnackBar("Sign in"));
 
         if (state.isSubmitting)
-          ScaffoldMessenger.of(context).showSnackBar(submittingSnackBar(
-            context: context,
-            title: "Signing In..."
-          ));
+          ScaffoldMessenger.of(context).showSnackBar(
+              submittingSnackBar(context: context, title: "Signing In..."));
 
         if (state.isSuccess) {
           BlocProvider.of<AuthBloc>(context).add(AuthSignedIn());
@@ -75,14 +73,6 @@ class _SignInFormState extends State<SignInForm> {
                         labelText: "Email Address",
                       ),
                       validator: Validators.isValidEmail,
-                      onChanged: (email) {
-                        _emailController.text = email;
-                        _emailController.selection = TextSelection.fromPosition(
-                          TextPosition(
-                            offset: _emailController.text.length,
-                          ),
-                        );
-                      },
                     ),
                     SizedBox(height: 15),
                     TextFormField(
@@ -95,15 +85,6 @@ class _SignInFormState extends State<SignInForm> {
                         labelText: "Password",
                       ),
                       validator: Validators.isValidPassword,
-                      onChanged: (password) {
-                        _passwordController.text = password;
-                        _passwordController.selection =
-                            TextSelection.fromPosition(
-                          TextPosition(
-                            offset: _passwordController.text.length,
-                          ),
-                        );
-                      },
                     ),
                     SizedBox(height: 30),
                     SizedBox(

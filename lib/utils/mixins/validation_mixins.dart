@@ -26,7 +26,7 @@ class Validators {
     if (password.isEmpty)
       return 'Password is required.';
     else if (!_passwordRegExp.hasMatch(password))
-      return "Invalid Email.";
+      return "Invalid Password.";
     else
       return null;
   }

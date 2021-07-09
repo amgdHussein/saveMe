@@ -83,14 +83,6 @@ class _SignUpFormState extends State<SignUpForm> {
                         labelText: "Email Address",
                       ),
                       validator: Validators.isValidEmail,
-                      onChanged: (email) {
-                        _emailController.text = email;
-                        _emailController.selection = TextSelection.fromPosition(
-                          TextPosition(
-                            offset: _emailController.text.length,
-                          ),
-                        );
-                      },
                     ),
                     SizedBox(height: 15),
                     TextFormField(
@@ -102,15 +94,6 @@ class _SignUpFormState extends State<SignUpForm> {
                         labelText: "Username",
                       ),
                       validator: Validators.isValidUserName,
-                      onChanged: (name) {
-                        _userNameController.text = name;
-                        _userNameController.selection =
-                            TextSelection.fromPosition(
-                          TextPosition(
-                            offset: _userNameController.text.length,
-                          ),
-                        );
-                      },
                     ),
                     SizedBox(height: 15),
                     TextFormField(
@@ -123,15 +106,6 @@ class _SignUpFormState extends State<SignUpForm> {
                         labelText: "Password",
                       ),
                       validator: Validators.isValidPassword,
-                      onChanged: (password) {
-                        _passwordController.text = password;
-                        _passwordController.selection =
-                            TextSelection.fromPosition(
-                          TextPosition(
-                            offset: _passwordController.text.length,
-                          ),
-                        );
-                      },
                     ),
                     SizedBox(height: 15),
                     TextFormField(
@@ -148,14 +122,6 @@ class _SignUpFormState extends State<SignUpForm> {
                         labelText: "Phone Number",
                       ),
                       validator: Validators.isValidPhoneNumber,
-                      onChanged: (phone) {
-                        _phoneController.text = phone;
-                        _phoneController.selection = TextSelection.fromPosition(
-                          TextPosition(
-                            offset: _phoneController.text.length,
-                          ),
-                        );
-                      },
                     ),
                     SizedBox(height: 30),
                     SizedBox(
